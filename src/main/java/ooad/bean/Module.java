@@ -8,6 +8,9 @@ public class Module {
     String name;
     String description;
 
+    public Module() {
+    }
+
     public Module(int id, String name, String description) {
         this.id = id;
         this.name = name;

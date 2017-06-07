@@ -46,6 +46,9 @@
     <bean id="ModuleDao" class="ooad.dao.ModuleDAO">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
+    <bean id="AssignmentService" class="ooad.service.impl.AssignmentService"></bean>
+    <bean id="CompanyService" class="ooad.service.impl.CompanyService"></bean>
+    <bean id="ModuleService" class="ooad.service.impl.ModuleService"></bean>
     <!-- Transaction Manager -->
     <bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">

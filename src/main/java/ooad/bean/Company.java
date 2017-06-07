@@ -14,6 +14,9 @@ public class Company {
     String tel;
     String description;
 
+    public Company() {
+    }
+
     public Company(int id, String orgCode, String name, String status, String category, String industry, String contact, String tel, String description) {
         this.id = id;
         this.orgCode = orgCode;

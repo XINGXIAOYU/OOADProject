@@ -8,6 +8,9 @@ public class Assignment {
     String name;
     String content;
 
+    public Assignment() {
+    }
+
     public Assignment(int id, String name, String content) {
         this.id = id;
         this.name = name;
