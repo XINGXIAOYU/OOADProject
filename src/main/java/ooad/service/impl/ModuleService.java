@@ -3,10 +3,14 @@ package ooad.service.impl;
 import ooad.bean.Assignment;
 import ooad.bean.Company;
 import ooad.bean.Module;
+import ooad.bean.ModuleProcess;
+import ooad.common.ModuleStatus;
+import ooad.common.util.StringToSqlDate;
 import ooad.dao.ModuleDAO;
 import ooad.service.IModuleService;
 
 import javax.annotation.Resource;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -49,33 +53,36 @@ public class ModuleService implements IModuleService {
 
     @Override
     public Boolean addAssignmentToModule(int module_id, int assignment_id) {
-        boolean result = moduleDAO.addAssignmentToModule(module_id,assignment_id);
+        boolean result = moduleDAO.addAssignmentToModule(module_id, assignment_id);
         return result;
     }
 
     @Override
     public Boolean deleteAssignmentFromModule(int module_id, int assignment_id) {
-        boolean result = moduleDAO.deleteAssignmentToModule(module_id,assignment_id);
+        boolean result = moduleDAO.deleteAssignmentToModule(module_id, assignment_id);
         return result;
     }
 
     @Override
     public List<Assignment> getModuleAssignments(int module_id) {
-        return moduleDao.getModuleAssignments(module_id);
+        return moduleDAO.getModuleAssignments(module_id);
     }
 
     @Override
-    public Boolean publishModule(int module_id, int company_id) {
-        return null;
+    public Boolean publishModule(int module_id, int company_id, String start_time, String finish_time) {
+        Date start = StringToSqlDate.strToDate(start_time);
+        Date finish = StringToSqlDate.strToDate(finish_time);
+        boolean result = moduleDAO.addModuleCompany(module_id, company_id, start, finish, ModuleStatus.Published);
+        return result;
     }
 
     @Override
     public List<Company> getModuleCompanys(int module_id) {
-        return null;
+        return moduleDAO.getModuleCompanys(module_id);
     }
 
     @Override
     public List<ModuleProcess> getModuleProcesses(int module_id) {
-        return null;
+        return moduleDAO.getModuleProcesses(module_id);
     }
 }

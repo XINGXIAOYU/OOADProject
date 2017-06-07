@@ -1,5 +1,7 @@
 package ooad.bean;
 
+import ooad.common.ModuleStatus;
+
 /**
  * Created by mayezhou on 2017/6/7.
  */
@@ -7,14 +9,16 @@ public class Module {
     int id;
     String name;
     String description;
+    ModuleStatus moduleStatus;
 
     public Module() {
     }
 
-    public Module(int id, String name, String description) {
+    public Module(int id, String name, String description, ModuleStatus moduleStatus) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.moduleStatus = ModuleStatus.Unpublished;
     }
 
     public int getId() {
