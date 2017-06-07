@@ -3,7 +3,6 @@ package ooad.dao;
 import org.hibernate.*;
 import ooad.bean.Assignment;
 
-import javax.annotation.Resource;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
  * Created by mayezhou on 2017/6/7.
  */
 public class AssignmentDAO {
-    @Resource
+
     private SessionFactory sessionFactory;
 
     public SessionFactory getSessionFactory() {
@@ -19,13 +18,10 @@ public class AssignmentDAO {
     }
 
     public void setSessionFactory(SessionFactory sessionFactory) {
-        System.out.println(sessionFactory);
         this.sessionFactory = sessionFactory;
-        System.out.println(this.sessionFactory);
-        System.out.println("test");
     }
 
-    public int save(Assignment assignment) {
+    public boolean addAssignment(Assignment assignment) {
         Session session = getSessionFactory().openSession();
         Transaction transaction = null;
         int id = -1;
@@ -39,21 +35,16 @@ public class AssignmentDAO {
         } finally {
             session.close();
         }
-        return id;
+        return id!=-1;
     }
 
-    public List<Assignment> getAll() {
+    public List<Assignment> getAssignments() {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
         List results = null;
         try {
             transaction = session.beginTransaction();
             results = session.createQuery("FROM Assignment").list();
-            for (Iterator iterator =
-                 results.iterator(); iterator.hasNext();){
-                Assignment assignment = (Assignment) iterator.next();
-                System.out.println(assignment);
-            }
             transaction.commit();
         } catch (HibernateException e) {
             if(transaction != null) transaction.rollback();
@@ -64,4 +55,38 @@ public class AssignmentDAO {
         return results;
     }
 
+
+    public boolean deleteAssignment(int assignmentId) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            Assignment assignment = session.get(Assignment.class, assignmentId);
+            session.delete(assignment);
+            tx.commit();
+        }catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        }finally {
+            session.close();
+            return true;
+        }
+    }
+
+    public Assignment searchAssignment(String assignmentName) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = null;
+        List results = null;
+        try {
+            transaction = session.beginTransaction();
+            results = session.createQuery("FROM Assignment A WHERE A.name = :assignmentName").setParameter("assignmentName", assignmentName).list();
+            transaction.commit();
+        } catch (HibernateException e) {
+            if(transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return (Assignment) results.get(0);
+    }
 }

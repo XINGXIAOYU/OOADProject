@@ -61,7 +61,7 @@ public class ModuleService implements IModuleService {
 
     @Override
     public List<Assignment> getModuleAssignments(int module_id) {
-        return moduleDao.getModuleAssignments(module_id);
+        return moduleDAO.getModuleAssignments(module_id);
     }
 
     @Override

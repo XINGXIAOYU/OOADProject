@@ -33,9 +33,6 @@
             </list>
         </property>
     </bean>
-    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
     <!-- DAO -->
     <bean id="AssignmentDao" class="ooad.dao.AssignmentDAO">
         <property name="sessionFactory" ref="sessionFactory"/>
