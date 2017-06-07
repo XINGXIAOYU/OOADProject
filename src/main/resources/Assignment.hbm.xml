@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="bean.Assignment" table="table">
+    <class name="ooad.bean.Assignment" table="assignment">
         <meta attribute="class-description">
             This class contains the post detail.
         </meta>
