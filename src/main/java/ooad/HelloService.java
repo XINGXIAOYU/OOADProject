@@ -1,4 +1,4 @@
-package foo.bar;
+package ooad;
 
 import org.springframework.stereotype.Component;
 

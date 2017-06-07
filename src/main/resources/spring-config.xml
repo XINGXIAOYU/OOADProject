@@ -33,14 +33,17 @@
             </list>
         </property>
     </bean>
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
     <!-- DAO -->
-    <bean id="AssignmentDao" class="dao.AssignmentDAO">
+    <bean id="AssignmentDao" class="ooad.dao.AssignmentDAO">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
-    <bean id="CompanyDao" class="dao.CompanyDAO">
+    <bean id="CompanyDao" class="ooad.dao.CompanyDAO">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
-    <bean id="ModuleDao" class="dao.ModuleDAO">
+    <bean id="ModuleDao" class="ooad.dao.ModuleDAO">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
     <!-- Transaction Manager -->
@@ -51,7 +54,7 @@
     <!-- to activate annotations in beans already registered in the ApplicationContext -->
     <context:annotation-config />
     <!-- scans packages to find and register beans within the application context -->
-    <context:component-scan base-package="foo.bar"/>
+    <context:component-scan base-package="ooad"/>
     <!-- turn on spring transaction annotation -->
     <tx:annotation-driven transaction-manager="transactionManager" />
 </beans>

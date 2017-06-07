@@ -1,4 +1,4 @@
-package bean;
+package ooad.bean;
 
 /**
  * Created by mayezhou on 2017/6/7.
@@ -12,6 +12,16 @@ public class Assignment {
         this.id = id;
         this.name = name;
         this.content = content;
+    }
+
+    public Assignment(String name, String content) {
+        this.name = name;
+        this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + "\nContent: " + content;
     }
 
     public int getId() {

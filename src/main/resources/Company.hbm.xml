@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="bean.Company" table="company">
+    <class name="ooad.bean.Company" table="company">
         <meta attribute="class-description">
             This class contains the post detail.
         </meta>

@@ -1,4 +1,4 @@
-package service;
+package ooad.service;
 
 /**
  * Created by xingxiaoyu on 17/6/7.

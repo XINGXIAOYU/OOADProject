@@ -1,11 +1,11 @@
-package dao;
+package ooad.dao;
 
 import org.hibernate.SessionFactory;
 
 /**
  * Created by mayezhou on 2017/6/7.
  */
-public class ModuleDAO {
+public class CompanyDAO {
     private SessionFactory sessionFactory;
 
     public SessionFactory getSessionFactory() {

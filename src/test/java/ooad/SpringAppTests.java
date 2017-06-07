@@ -1,5 +1,7 @@
-package foo.bar;
+package ooad;
 
+import ooad.bean.Assignment;
+import ooad.dao.AssignmentDAO;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,5 +18,9 @@ public class SpringAppTests {
     @Test
     public void testSayHello() {
         Assert.assertEquals("Hello world!", helloService.sayHello());
+        AssignmentDAO assignmentDAO = new AssignmentDAO();
+        Assignment assignment = new Assignment("test", "test content");
+        assignmentDAO.save(assignment);
+        assignmentDAO.getAll();
     }
 }
