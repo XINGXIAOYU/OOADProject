@@ -2,7 +2,59 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-    <context:annotation-config />
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+    <!--TODO: dataSource configuration -->
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/OOAD"/>
+        <property name="username" value="root"/>
+        <property name="password" value=""/>
+    </bean>
+    <!-- Session Factory -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+        <property name="mappingLocations">
+            <list>
+                <value>classpath:Assignment.hbm.xml</value>
+                <value>classpath:Module.hbm.xml</value>
+                <value>classpath:Company.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+    <!-- DAO -->
+    <bean id="AssignmentDao" class="dao.AssignmentDAO">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="CompanyDao" class="dao.CompanyDAO">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="ModuleDao" class="dao.ModuleDAO">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="AssignmentService" class="service.impl.AssignmentService"></bean>
+    <bean id="CompanyService" class="service.impl.CompanyService"></bean>
+    <bean id="ModuleService" class="service.impl.ModuleService"></bean>
+    <!-- Transaction Manager -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <!-- to activate annotations in beans already registered in the ApplicationContext -->
+    <context:annotation-config/>
+    <!-- scans packages to find and register beans within the application context -->
     <context:component-scan base-package="foo.bar"/>
+    <!-- turn on spring transaction annotation -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>

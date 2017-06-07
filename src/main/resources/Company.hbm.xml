@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="bean.Company" table="company">
+        <meta attribute="class-description">
+            This class contains the post detail.
+        </meta>
+        <id name="id" type="int" column="idcompany">
+            <generator class="native"/>
+        </id>
+        <property name="orgCode" column="orgcode" type="string"/>
+        <property name="category" column="category" type="java.lang.String"/>
+        <property name="contact" column="contact" type="java.lang.String"/>
+        <property name="name" column="name" type="java.lang.String"/>
+        <property name="status" column="status" type="java.lang.String"/>
+        <property name="industry" column="industry" type="java.lang.String"/>
+        <property name="tel" column="tel" type="java.lang.String"/>
+        <property name="description" column="description" type="java.lang.String"/>
+    </class>
+</hibernate-mapping>
