@@ -1,9 +1,6 @@
 package ooad.service.impl;
 
-import ooad.bean.Assignment;
-import ooad.bean.Company;
-import ooad.bean.Module;
-import ooad.bean.ModuleProcess;
+import ooad.bean.*;
 import ooad.common.ModuleStatus;
 import ooad.common.util.StringToSqlDate;
 import ooad.dao.ModuleDAO;
@@ -53,7 +50,8 @@ public class ModuleService implements IModuleService {
 
     @Override
     public Boolean addAssignmentToModule(int module_id, int assignment_id) {
-        boolean result = moduleDAO.addAssignmentToModule(module_id, assignment_id);
+        ModuleAssignment newEntry = new ModuleAssignment(module_id, assignment_id);
+        boolean result = moduleDAO.addAssignmentToModule(newEntry);
         return result;
     }
 
@@ -72,7 +70,8 @@ public class ModuleService implements IModuleService {
     public Boolean publishModule(int module_id, int company_id, String start_time, String finish_time) {
         Date start = StringToSqlDate.strToDate(start_time);
         Date finish = StringToSqlDate.strToDate(finish_time);
-        boolean result = moduleDAO.addModuleCompany(module_id, company_id, start, finish, ModuleStatus.Published);
+        ModuleProcess moduleProcess = new ModuleProcess(module_id, company_id, start, finish);
+        boolean result = moduleDAO.addModuleCompany(moduleProcess);
         return result;
     }
 

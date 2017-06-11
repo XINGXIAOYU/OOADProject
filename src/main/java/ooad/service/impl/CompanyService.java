@@ -2,8 +2,10 @@ package ooad.service.impl;
 
 import ooad.bean.Company;
 import ooad.bean.Module;
+import ooad.bean.ModuleAssignment;
 import ooad.common.CompleteStatus;
 import ooad.dao.CompanyDAO;
+import ooad.dao.ModuleDAO;
 import ooad.service.ICompanyService;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ import java.util.List;
 public class CompanyService implements ICompanyService {
     @Resource
     CompanyDAO companyDAO;
+    @Resource
+    ModuleDAO moduleDAO;
 
     @Override
     public List<Company> getCompanys() {
@@ -29,14 +33,14 @@ public class CompanyService implements ICompanyService {
 
     @Override
     public List<Module> getCModuleList(int company_id) {
-        return companyDAO.getCModuleList(company_id);
+        return moduleDAO.getCModuleList(company_id);
     }
 
     @Override
     public Boolean completeStatus(int module_id) {
         LocalDate todayLocalDate = LocalDate.now(ZoneId.of("America/Montreal"));
         Date date= Date.valueOf(todayLocalDate);
-        boolean result = companyDAO.updateStatus(module_id,date, CompleteStatus.Completed);
+        boolean result = moduleDAO.updateStatus(module_id,date, CompleteStatus.Completed);
         return result;
     }
 }

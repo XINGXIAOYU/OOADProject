@@ -16,7 +16,11 @@ public class ModuleProcess {
     Date company_finish_time;
     CompleteStatus status;
 
-    public ModuleProcess() {
+    public ModuleProcess(int module_id, int company_id, Date start_time, Date finish_time) {
+        this.module_id = module_id;
+        this.company_id = company_id;
+        this.start_time = start_time;
+        this.finish_time = finish_time;
     }
 
     public ModuleProcess(int id, int module_id, int company_id, Date start_time, Date finish_time, Date company_finish_time, CompleteStatus status) {

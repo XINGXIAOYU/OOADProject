@@ -6,5 +6,4 @@ package ooad.common;
 public enum CompleteStatus {
     Completed,
     Uncompleted
-
 }

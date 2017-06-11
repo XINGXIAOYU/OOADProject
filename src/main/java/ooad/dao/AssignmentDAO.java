@@ -1,5 +1,6 @@
 package ooad.dao;
 
+import ooad.common.exceptions.NoSuchEntryException;
 import org.hibernate.*;
 import ooad.bean.Assignment;
 
@@ -88,5 +89,25 @@ public class AssignmentDAO {
             session.close();
         }
         return (Assignment) results.get(0);
+    }
+
+    public Assignment searchAssignment(int id) throws NoSuchEntryException {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = null;
+        Assignment assignment = null;
+        try {
+            transaction = session.beginTransaction();
+            assignment = session.get(Assignment.class, id);
+            transaction.commit();
+        } catch (HibernateException e) {
+            if(transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        if (assignment == null) {
+            throw new NoSuchEntryException();
+        }
+        return assignment;
     }
 }

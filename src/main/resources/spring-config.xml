@@ -30,6 +30,7 @@
                 <value>classpath:Assignment.hbm.xml</value>
                 <value>classpath:Module.hbm.xml</value>
                 <value>classpath:Company.hbm.xml</value>
+                <value>classpath:ModuleAssignment.hbm.xml</value>
             </list>
         </property>
     </bean>
@@ -42,6 +43,8 @@
     </bean>
     <bean id="ModuleDao" class="ooad.dao.ModuleDAO">
         <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="assignmentDAO" ref="AssignmentDao"/>
+        <property name="companyDAO" ref="CompanyDao"/>
     </bean>
     <bean id="AssignmentService" class="ooad.service.impl.AssignmentService"></bean>
     <bean id="CompanyService" class="ooad.service.impl.CompanyService"></bean>

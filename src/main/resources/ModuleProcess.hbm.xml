@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="ooad.bean.ModuleProcess" table="moduleProcess">
+        <meta attribute="class-description">
+            This class contains the post detail.
+        </meta>
+        <id name="id" type="int" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="module_id" column="module_id" type="int"/>
+        <property name="company_id" column="company_id" type="int"/>
+        <property name="start_time" column="start_time" type="java.util.Date"/>
+        <property name="finish_time" column="finish_time" type="java.util.Date"/>
+        <property name="company_finish_time" column="company_finish_time" type="java.util.Date"/>
+        <property name="status" column="status" type="ooad.common.CompleteStatus"/>
+        <!--TODO: enum -> string-->
+    </class>
+</hibernate-mapping>
