@@ -3,6 +3,7 @@ package ooad.service;
 import ooad.bean.Assignment;
 import ooad.bean.Company;
 import ooad.bean.Module;
+import ooad.bean.ModuleProcess;
 
 import java.util.List;
 
@@ -71,7 +72,7 @@ public interface IModuleService {
      *
      * @return 是否发放成功
      */
-    Boolean publishModule(int module_id, int company_id);
+    Boolean publishModule(int module_id, int company_id, String start_time, String finish_time);
 
     /**
      * 获得某个模板所对应的企业列表
