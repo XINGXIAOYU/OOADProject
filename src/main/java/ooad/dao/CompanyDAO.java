@@ -1,6 +1,5 @@
 package ooad.dao;
 
-import ooad.bean.company;
 import ooad.bean.Company;
 import ooad.common.exceptions.NoSuchEntryException;
 import org.hibernate.HibernateException;

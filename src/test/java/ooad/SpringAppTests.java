@@ -18,9 +18,6 @@ public class SpringAppTests {
     @Test
     public void testSayHello() {
         Assert.assertEquals("Hello world!", helloService.sayHello());
-        AssignmentDAO assignmentDAO = new AssignmentDAO();
-        Assignment assignment = new Assignment("test", "test content");
-        assignmentDAO.save(assignment);
-        assignmentDAO.getAll();
     }
+
 }

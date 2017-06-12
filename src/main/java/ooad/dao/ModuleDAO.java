@@ -324,7 +324,22 @@ public class ModuleDAO {
         return module;
     }
 
-    public boolean updateStatus(int moduleId, Date date, CompleteStatus completed) {
-
+    public boolean updateStatus(int moduleProcessId, Date date, CompleteStatus completed) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            ModuleProcess moduleProcess = session.get(ModuleProcess.class, moduleProcessId);
+            moduleProcess.setCompany_finish_time(date);
+            moduleProcess.setStatus(completed);
+            session.update(moduleProcess);
+            tx.commit();
+        }catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        }finally {
+            session.close();
+            return true;
+        }
     }
 }

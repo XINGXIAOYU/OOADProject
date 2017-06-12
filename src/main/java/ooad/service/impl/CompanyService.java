@@ -37,10 +37,10 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public Boolean completeStatus(int module_id) {
+    public Boolean completeStatus(int module_process_id) {
         LocalDate todayLocalDate = LocalDate.now(ZoneId.of("America/Montreal"));
         Date date= Date.valueOf(todayLocalDate);
-        boolean result = moduleDAO.updateStatus(module_id,date, CompleteStatus.Completed);
+        boolean result = moduleDAO.updateStatus(module_process_id,date, CompleteStatus.Completed);
         return result;
     }
 }
