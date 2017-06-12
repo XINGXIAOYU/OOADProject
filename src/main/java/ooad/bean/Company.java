@@ -29,6 +29,19 @@ public class Company {
         this.description = description;
     }
 
+    @Override
+    public String toString() {
+        return "id: " + id
+                +"\norgCode: " + orgCode
+                +"\nname: " + name
+                +"\nstatus: " + status
+                +"\ncategory: " + category
+                +"\nindustry: " + industry
+                +"\ncontact: " + contact
+                +"\ntel: " + tel
+                +"\ndescription: " + description;
+    }
+
     public int getId() {
         return id;
     }

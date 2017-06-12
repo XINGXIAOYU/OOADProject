@@ -1,6 +1,7 @@
 package ooad.service.impl;
 
 import ooad.bean.Assignment;
+import ooad.common.exceptions.NoSuchEntryException;
 import ooad.dao.AssignmentDAO;
 import ooad.service.IAssignmentService;
 
@@ -29,13 +30,18 @@ public class AssignmentService implements IAssignmentService {
         Assignment assignment = new Assignment();
         assignment.setName(assignment_name);
         assignment.setContent(assignment_content);
-        boolean result = assignmentDAO.addAssignment(assignment);
-        return result;
+        int id = assignmentDAO.addAssignment(assignment);
+        return id != -1;
     }
 
     @Override
     public Boolean deleteAssignment(int assignment_id) {
-        boolean result = assignmentDAO.deleteAssignment(assignment_id);
-        return result;
+        try {
+            assignmentDAO.deleteAssignment(assignment_id);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -44,7 +44,7 @@ public class ModuleDAO {
         this.assignmentDAO = assignmentDAO;
     }
 
-    public Module findModule(String moduleName) {
+    public List findModule(String moduleName) throws NoSuchEntryException {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
         List results = null;
@@ -58,13 +58,16 @@ public class ModuleDAO {
         } finally {
             session.close();
         }
-        return (Module) results.get(0);
+        if (results == null) {
+            throw new NoSuchEntryException();
+        }
+        return results;
     }
 
-    public List<Module> getModules() {
+    public List getModules() {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
-        List results = null;
+        List results = new ArrayList();
         try {
             transaction = session.beginTransaction();
             results = session.createQuery("FROM Module").list();
@@ -78,7 +81,7 @@ public class ModuleDAO {
         return results;
     }
 
-    public boolean addModule(Module module) {
+    public int addModule(Module module) {
         Session session = getSessionFactory().openSession();
         Transaction transaction = null;
         int id = -1;
@@ -92,7 +95,7 @@ public class ModuleDAO {
         } finally {
             session.close();
         }
-        return id!=-1;
+        return id;
     }
 
     public boolean deleteModule(int moduleId) {

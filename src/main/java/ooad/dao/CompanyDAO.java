@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class CompanyDAO {
     public List<Company> getCompanys(){
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
-        List results = null;
+        List<Company> results = new ArrayList<Company>();
         try {
             transaction = session.beginTransaction();
             results = session.createQuery("FROM Company" ).list();

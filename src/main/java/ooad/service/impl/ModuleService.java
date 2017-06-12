@@ -2,6 +2,7 @@ package ooad.service.impl;
 
 import ooad.bean.*;
 import ooad.common.ModuleStatus;
+import ooad.common.exceptions.NoSuchEntryException;
 import ooad.common.util.StringToSqlDate;
 import ooad.dao.ModuleDAO;
 import ooad.service.IModuleService;
@@ -32,8 +33,8 @@ public class ModuleService implements IModuleService {
         Module newModule = new Module();
         newModule.setName(module_name);
         newModule.setDescription(module_content);
-        boolean result = moduleDAO.addModule(newModule);
-        return result;
+        int result = moduleDAO.addModule(newModule);
+        return result != -1;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class ModuleService implements IModuleService {
     }
 
     @Override
-    public List<Assignment> getModuleAssignments(int module_id) {
+    public List<Assignment> getModuleAssignments(int module_id) throws NoSuchEntryException {
         return moduleDAO.getModuleAssignments(module_id);
     }
 
@@ -76,12 +77,12 @@ public class ModuleService implements IModuleService {
     }
 
     @Override
-    public List<Company> getModuleCompanys(int module_id) {
+    public List<Company> getModuleCompanys(int module_id) throws NoSuchEntryException {
         return moduleDAO.getModuleCompanys(module_id);
     }
 
     @Override
-    public List<ModuleProcess> getModuleProcesses(int module_id) {
+    public List<ModuleProcess> getModuleProcesses(int module_id) throws NoSuchEntryException {
         return moduleDAO.getModuleProcesses(module_id);
     }
 }

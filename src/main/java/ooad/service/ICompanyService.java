@@ -2,6 +2,7 @@ package ooad.service;
 
 import ooad.bean.Company;
 import ooad.bean.Module;
+import ooad.common.exceptions.NoSuchEntryException;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface ICompanyService {
      *
      * @return 下发模板列表
      */
-    List<Module> getCModuleList(int company_id);
+    List<Module> getCModuleList(int company_id) throws NoSuchEntryException;
 
     /**
      * 录入排查结果

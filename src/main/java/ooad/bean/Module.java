@@ -21,6 +21,12 @@ public class Module {
         this.moduleStatus = ModuleStatus.Unpublished;
     }
 
+    public Module(String name, String description) {
+        this.name = name;
+        this.description = description;
+        this.moduleStatus = ModuleStatus.Unpublished;
+    }
+
     public int getId() {
         return id;
     }

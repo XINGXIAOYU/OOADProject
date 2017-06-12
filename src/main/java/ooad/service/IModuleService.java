@@ -4,6 +4,7 @@ import ooad.bean.Assignment;
 import ooad.bean.Company;
 import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
+import ooad.common.exceptions.NoSuchEntryException;
 
 import java.util.List;
 
@@ -65,7 +66,7 @@ public interface IModuleService {
      *
      * @return 定义的模板检查项目
      */
-    List<Assignment> getModuleAssignments(int module_id);
+    List<Assignment> getModuleAssignments(int module_id) throws NoSuchEntryException;
 
     /**
      * 发放模板给企业
@@ -79,13 +80,13 @@ public interface IModuleService {
      *
      * @return 对应企业列表
      */
-    List<Company> getModuleCompanys(int module_id);
+    List<Company> getModuleCompanys(int module_id) throws NoSuchEntryException;
 
     /**
      * 获得某个模板执行进度列表
      *
      * @return 执行进度列表
      */
-    List<ModuleProcess> getModuleProcesses(int module_id);
+    List<ModuleProcess> getModuleProcesses(int module_id) throws NoSuchEntryException;
 
 }

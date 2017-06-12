@@ -8,7 +8,7 @@
         <meta attribute="class-description">
             This class contains the post detail.
         </meta>
-        <id name="id" type="int" column="id">
+        <id name="id" type="int" column="idassignment">
             <generator class="native"/>
         </id>
         <property name="name" column="" type="string"/>

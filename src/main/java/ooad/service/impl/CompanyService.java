@@ -4,6 +4,7 @@ import ooad.bean.Company;
 import ooad.bean.Module;
 import ooad.bean.ModuleAssignment;
 import ooad.common.CompleteStatus;
+import ooad.common.exceptions.NoSuchEntryException;
 import ooad.dao.CompanyDAO;
 import ooad.dao.ModuleDAO;
 import ooad.service.ICompanyService;
@@ -32,7 +33,7 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public List<Module> getCModuleList(int company_id) {
+    public List<Module> getCModuleList(int company_id) throws NoSuchEntryException {
         return moduleDAO.getCModuleList(company_id);
     }
 

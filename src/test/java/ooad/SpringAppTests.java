@@ -1,7 +1,5 @@
 package ooad;
 
-import ooad.bean.Assignment;
-import ooad.dao.AssignmentDAO;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

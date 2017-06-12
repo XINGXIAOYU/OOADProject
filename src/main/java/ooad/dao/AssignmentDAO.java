@@ -4,6 +4,7 @@ import ooad.common.exceptions.NoSuchEntryException;
 import org.hibernate.*;
 import ooad.bean.Assignment;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class AssignmentDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    public boolean addAssignment(Assignment assignment) {
+    public int addAssignment(Assignment assignment) {
         Session session = getSessionFactory().openSession();
         Transaction transaction = null;
         int id = -1;
@@ -36,13 +37,13 @@ public class AssignmentDAO {
         } finally {
             session.close();
         }
-        return id!=-1;
+        return id;
     }
 
     public List<Assignment> getAssignments() {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
-        List results = null;
+        List<Assignment> results = new ArrayList<Assignment>();
         try {
             transaction = session.beginTransaction();
             results = session.createQuery("FROM Assignment").list();
@@ -57,7 +58,7 @@ public class AssignmentDAO {
     }
 
 
-    public boolean deleteAssignment(int assignmentId) {
+    public void deleteAssignment(int assignmentId) throws NoSuchEntryException {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try{
@@ -68,9 +69,14 @@ public class AssignmentDAO {
         }catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
-        }finally {
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("attempt to create delete event with null entity")) {
+                throw new NoSuchEntryException();
+            } else {
+                throw e;
+            }
+        } finally{
             session.close();
-            return true;
         }
     }
 
