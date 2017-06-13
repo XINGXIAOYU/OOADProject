@@ -39,15 +39,15 @@ public class CompanyDAO {
             session.close();
         }
         if (company == null) {
-            throw new NoSuchEntryException();
+            throw new NoSuchEntryException("idCompany : " + id);
         }
         return company;
     }
 
-    public List<Company> getCompanys(){
+    public List getCompanys(){
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
-        List<Company> results = new ArrayList<Company>();
+        List results = new ArrayList();
         try {
             transaction = session.beginTransaction();
             results = session.createQuery("FROM Company" ).list();

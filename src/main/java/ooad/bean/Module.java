@@ -1,30 +1,48 @@
 package ooad.bean;
 
-import ooad.common.ModuleStatus;
 
 /**
  * Created by mayezhou on 2017/6/7.
  */
 public class Module {
+    public final static String PUBLISHED = "Published";
+    public final static String UNPUBLISHED = "Unpublished";
+    public final static String BANNED = "Banned";
     int id;
     String name;
     String description;
-    ModuleStatus moduleStatus;
+    String moduleStatus;
 
     public Module() {
     }
 
-    public Module(int id, String name, String description, ModuleStatus moduleStatus) {
+    public Module(int id, String name, String description, String moduleStatus) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.moduleStatus = ModuleStatus.Unpublished;
+        this.moduleStatus = moduleStatus;
     }
 
     public Module(String name, String description) {
         this.name = name;
         this.description = description;
-        this.moduleStatus = ModuleStatus.Unpublished;
+        this.moduleStatus = UNPUBLISHED;
+    }
+
+    @Override
+    public String toString() {
+        return "id : " + id
+                +"\nname : " + name
+                +"\ndescription : " + description
+                +"\nstatus : " + moduleStatus.toString();
+    }
+
+    public String getModuleStatus() {
+        return moduleStatus;
+    }
+
+    public void setModuleStatus(String moduleStatus) {
+        this.moduleStatus = moduleStatus;
     }
 
     public int getId() {

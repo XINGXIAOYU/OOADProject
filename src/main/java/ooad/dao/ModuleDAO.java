@@ -1,14 +1,9 @@
 package ooad.dao;
 
 import ooad.bean.*;
-import ooad.common.CompleteStatus;
 import ooad.common.exceptions.NoSuchEntryException;
-import ooad.common.exceptions.RepetitiveEntryException;
 import org.hibernate.*;
-import org.hibernate.criterion.Restrictions;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 
@@ -44,7 +39,7 @@ public class ModuleDAO {
         this.assignmentDAO = assignmentDAO;
     }
 
-    public List findModule(String moduleName) throws NoSuchEntryException {
+    public List findModule(String moduleName) {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
         List results = null;
@@ -58,16 +53,13 @@ public class ModuleDAO {
         } finally {
             session.close();
         }
-        if (results == null) {
-            throw new NoSuchEntryException();
-        }
         return results;
     }
 
     public List getModules() {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
-        List results = new ArrayList();
+        List results = null;
         try {
             transaction = session.beginTransaction();
             results = session.createQuery("FROM Module").list();
@@ -98,7 +90,7 @@ public class ModuleDAO {
         return id;
     }
 
-    public boolean deleteModule(int moduleId) {
+    public void deleteModule(int moduleId) throws NoSuchEntryException {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try{
@@ -109,13 +101,18 @@ public class ModuleDAO {
         }catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
-        }finally {
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("attempt to create delete event with null entity")) {
+                throw new NoSuchEntryException();
+            } else {
+                throw e;
+            }
+        } finally {
             session.close();
-            return true;
         }
     }
 
-    public boolean updateModule(int moduleId, String moduleName, String moduleContent) {
+    public void updateModule(int moduleId, String moduleName, String moduleContent) throws NoSuchEntryException {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try{
@@ -128,19 +125,25 @@ public class ModuleDAO {
         }catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
-        }finally {
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("attempt to create delete event with null entity")) {
+                throw new NoSuchEntryException();
+            } else {
+                throw e;
+            }
+        } finally {
             session.close();
-            return true;
         }
     }
 
-    public boolean addAssignmentToModule(ModuleAssignment newEntry) {
+
+    public int addAssignmentToModule(ModuleAssignment newEntry) {
         Session session = getSessionFactory().openSession();
         Transaction transaction = null;
         int id = -1;
         try {
             transaction = session.beginTransaction();
-            id = (Integer) session.save(newEntry);
+            id = (Integer) session.save(newEntry);//TODO: foreign key constraint, throw exception
             transaction.commit();
         } catch (HibernateException e) {
             if(transaction != null) transaction.rollback();
@@ -148,32 +151,28 @@ public class ModuleDAO {
         } finally {
             session.close();
         }
-        return id!=-1;
+        return id;
     }
 
-    public boolean deleteAssignmentToModule(int moduleId, int assignmentId) {
+    public void deleteAssignmentToModule(int id) throws NoSuchEntryException {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try{
             tx = session.beginTransaction();
-            Criteria cr = session.createCriteria(ModuleAssignment.class);
-            cr.add(Restrictions.eq("moduleID", moduleId));
-            cr.add(Restrictions.eq("assignmentID", assignmentId));
-            List result = cr.list();
-            if (result.size() == 0) {
-                throw new NoSuchEntryException();
-            } else if (result.size() > 1) {
-                throw new RepetitiveEntryException();
-            }
-            ModuleAssignment moduleAssignment = (ModuleAssignment) result.get(0);
+            ModuleAssignment moduleAssignment = session.get(ModuleAssignment.class, id);
             session.delete(moduleAssignment);
             tx.commit();
-        }catch (HibernateException e) {
+        } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
-        }finally {
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("attempt to create delete event with null entity")) {
+                throw new NoSuchEntryException();
+            } else {
+                throw e;
+            }
+        } finally {
             session.close();
-            return true;
         }
     }
 
@@ -214,7 +213,7 @@ public class ModuleDAO {
         int id = -1;
         try {
             transaction = session.beginTransaction();
-            id = (Integer) session.save(moduleProcess);
+            id = (Integer) session.save(moduleProcess);//TODO: foreign key constraint
             transaction.commit();
         } catch (HibernateException e) {
             if(transaction != null) transaction.rollback();
@@ -250,13 +249,10 @@ public class ModuleDAO {
         } finally {
             session.close();
         }
-        if (results.size() == 0) {
-            throw new NoSuchElementException("No company attached to this module!");
-        }
         return results;
     }
 
-    public List<ModuleProcess> getModuleProcesses(int moduleId) throws NoSuchEntryException {
+    public List getModuleProcesses(int moduleId) { //TODO: module.status
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
         List results = null;
@@ -269,9 +265,6 @@ public class ModuleDAO {
             e.printStackTrace();
         } finally {
             session.close();
-        }
-        if(results == null || results.size() == 0) {
-            throw new NoSuchEntryException();
         }
         return results;
     }
@@ -301,9 +294,6 @@ public class ModuleDAO {
         } finally {
             session.close();
         }
-        if (results.size() == 0) {
-            throw new NoSuchElementException("No module assigned to this company!");
-        }
         return results;
     }
 
@@ -322,12 +312,12 @@ public class ModuleDAO {
             session.close();
         }
         if (module == null) {
-            throw new NoSuchEntryException();
+            throw new NoSuchEntryException(id+"");
         }
         return module;
     }
 
-    public boolean updateStatus(int moduleProcessId, Date date, CompleteStatus completed) {
+    public void updateStatus(int moduleProcessId, Date date, String completed) throws NoSuchEntryException {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try{
@@ -337,12 +327,61 @@ public class ModuleDAO {
             moduleProcess.setStatus(completed);
             session.update(moduleProcess);
             tx.commit();
-        }catch (HibernateException e) {
+        } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
-        }finally {
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("attempt to create delete event with null entity")) {
+                throw new NoSuchEntryException();
+            } else {
+                throw e;
+            }
+        } finally {
             session.close();
-            return true;
         }
+    }
+
+    //TODO: invoke by service
+    public void updateStatus(int moduleProcessId, String banned) throws NoSuchEntryException {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            ModuleProcess moduleProcess = session.get(ModuleProcess.class, moduleProcessId);
+            moduleProcess.setStatus(banned);
+            session.update(moduleProcess);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("attempt to create delete event with null entity")) {
+                throw new NoSuchEntryException();
+            } else {
+                throw e;
+            }
+        } finally {
+            session.close();
+        }
+    }
+
+    public ModuleProcess getModuleProcess(int moduleProcessId) throws NoSuchEntryException {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        ModuleProcess moduleProcess = null;
+        try{
+            tx = session.beginTransaction();
+            moduleProcess = session.get(ModuleProcess.class, moduleProcessId);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        }  finally {
+            session.close();
+        }
+        if (moduleProcess == null) {
+            throw new NoSuchEntryException("idModuleProcess = " + moduleProcessId);
+        }
+        return moduleProcess;
     }
 }

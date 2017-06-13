@@ -16,7 +16,7 @@
         <property name="start_time" column="start_time" type="java.util.Date"/>
         <property name="finish_time" column="finish_time" type="java.util.Date"/>
         <property name="company_finish_time" column="company_finish_time" type="java.util.Date"/>
-        <property name="status" column="status" type="ooad.common.CompleteStatus"/>
+        <property name="status" column="status" type="string"/>
         <!--TODO: enum -> string-->
     </class>
 </hibernate-mapping>

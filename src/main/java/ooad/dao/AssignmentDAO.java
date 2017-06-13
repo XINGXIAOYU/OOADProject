@@ -40,10 +40,10 @@ public class AssignmentDAO {
         return id;
     }
 
-    public List<Assignment> getAssignments() {
+    public List getAssignments() {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
-        List<Assignment> results = new ArrayList<Assignment>();
+        List results = null;
         try {
             transaction = session.beginTransaction();
             results = session.createQuery("FROM Assignment").list();
@@ -64,7 +64,7 @@ public class AssignmentDAO {
         try{
             tx = session.beginTransaction();
             Assignment assignment = session.get(Assignment.class, assignmentId);
-            session.delete(assignment);
+            session.delete(assignment);//TODO: foriegn key constraint
             tx.commit();
         }catch (HibernateException e) {
             if (tx!=null) tx.rollback();
@@ -80,7 +80,7 @@ public class AssignmentDAO {
         }
     }
 
-    public Assignment searchAssignment(String assignmentName) {
+    public List searchAssignment(String assignmentName) {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
         List results = null;
@@ -94,7 +94,7 @@ public class AssignmentDAO {
         } finally {
             session.close();
         }
-        return (Assignment) results.get(0);
+        return results;
     }
 
     public Assignment searchAssignment(int id) throws NoSuchEntryException {
@@ -112,7 +112,7 @@ public class AssignmentDAO {
             session.close();
         }
         if (assignment == null) {
-            throw new NoSuchEntryException();
+            throw new NoSuchEntryException("idassignment = " + id);
         }
         return assignment;
     }

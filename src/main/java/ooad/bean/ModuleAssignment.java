@@ -1,6 +1,5 @@
 package ooad.bean;
 
-import ooad.dao.ModuleDAO;
 
 /**
  * Created by mayezhou on 2017/6/11.

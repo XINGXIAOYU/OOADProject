@@ -21,18 +21,12 @@ public class ModuleService implements IModuleService {
 
     @Override
     public List<Module> findModule(String module_name) {
-        try {
-            return moduleDAO.findModule(module_name);
-        } catch (NoSuchEntryException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return moduleDAO.findModule(module_name);
     }
 
     @Override
     public List<Module> getModules() {
-//        return moduleDAO.getModules(x);
-        return null;
+        return moduleDAO.getModules();
     }
 
     @Override
@@ -52,8 +46,13 @@ public class ModuleService implements IModuleService {
         if( !role.equals(Role.Admin) ) {
             throw new AuthorityException(role);
         }
-        boolean result = moduleDAO.deleteModule(module_id);
-        return result;
+        try {
+            moduleDAO.deleteModule(module_id);
+            return true;
+        } catch (NoSuchEntryException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -61,8 +60,13 @@ public class ModuleService implements IModuleService {
         if( !role.equals(Role.Admin) ) {
             throw new AuthorityException(role);
         }
-        boolean result = moduleDAO.updateModule(module_id, module_name, module_content);
-        return result;
+        try {
+            moduleDAO.updateModule(module_id, module_name, module_content);
+            return true;
+        } catch (NoSuchEntryException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -71,22 +75,27 @@ public class ModuleService implements IModuleService {
             throw new AuthorityException(role);
         }
         ModuleAssignment newEntry = new ModuleAssignment(module_id, assignment_id);
-        boolean result = moduleDAO.addAssignmentToModule(newEntry);
-        return result;
+        return moduleDAO.addAssignmentToModule(newEntry) != -1;
     }
 
     @Override
-    public Boolean deleteAssignmentFromModule(Role role,int module_id, int assignment_id)throws AuthorityException {
+    public Boolean deleteAssignmentFromModule(Role role,int id)throws AuthorityException {
         if( !role.equals(Role.Admin) ) {
             throw new AuthorityException(role);
         }
-        boolean result = moduleDAO.deleteAssignmentToModule(module_id, assignment_id);
-        return result;
+        try {
+            moduleDAO.deleteAssignmentToModule(id);
+            return true;
+        } catch (NoSuchEntryException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
     public List<Assignment> getModuleAssignments(int module_id) throws NoSuchEntryException {
         return moduleDAO.getModuleAssignments(module_id);
+        //TODO: throw OR catch?
     }
 
     @Override
@@ -97,8 +106,7 @@ public class ModuleService implements IModuleService {
         Date start = StringToSqlDate.strToDate(start_time);
         Date finish = StringToSqlDate.strToDate(finish_time);
         ModuleProcess moduleProcess = new ModuleProcess(module_id, company_id, start, finish);
-        boolean result = moduleDAO.addModuleCompany(moduleProcess);
-        return result;
+        return moduleDAO.addModuleCompany(moduleProcess);
     }
 
     @Override

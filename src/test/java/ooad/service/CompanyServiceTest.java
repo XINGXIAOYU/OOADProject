@@ -3,7 +3,6 @@ package ooad.service;
 import ooad.bean.Company;
 import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
-import ooad.common.CompleteStatus;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
 import ooad.service.impl.CompanyService;
@@ -61,7 +60,7 @@ public class CompanyServiceTest {
         assert result == true;
         ModuleProcess moduleProcess = companyService.getModuleProcess(Role.Company, 1);
         assert moduleProcess.getFinish_time() != null;
-        assert moduleProcess.getStatus() == CompleteStatus.Completed;
+        assert moduleProcess.getStatus().equals(ModuleProcess.COMPLETED);
 
     }
 }

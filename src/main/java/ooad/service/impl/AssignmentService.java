@@ -3,6 +3,7 @@ package ooad.service.impl;
 import ooad.bean.Assignment;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
+import ooad.common.exceptions.NoSuchEntryException;
 import ooad.dao.AssignmentDAO;
 import ooad.service.IAssignmentService;
 
@@ -17,7 +18,7 @@ public class AssignmentService implements IAssignmentService {
     AssignmentDAO assignmentDAO;
 
     @Override
-    public Assignment findAssignment(String assignment_name) {
+    public List<Assignment> findAssignment(String assignment_name) {
         return assignmentDAO.searchAssignment(assignment_name);
     }
 

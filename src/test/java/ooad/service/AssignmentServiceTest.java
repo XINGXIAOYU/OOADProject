@@ -5,8 +5,10 @@ import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
 import ooad.common.exceptions.NoSuchEntryException;
 import ooad.service.impl.AssignmentService;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -18,16 +20,17 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring-config.xml")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AssignmentServiceTest {
     @Resource
     AssignmentService assignmentService;
 
     @Test
     public void testFindAssignment() {
-        Assignment dbAssignment = assignmentService.findAssignment("test assignment");
-        Assignment stdAssignment = new Assignment(1, "test assignment", "assignment for test");
-        assert dbAssignment.toString().equals(stdAssignment.toString());
-
+        List<Assignment> assignments = assignmentService.findAssignment("test assignment");
+        assert assignments.size() > 0;
+        assignments = assignmentService.findAssignment("There is no such assignment");
+        assert assignments.size() == 0;
     }
 
     @Test
@@ -51,27 +54,22 @@ public class AssignmentServiceTest {
             assert name.equals("new one");
             assert content.equals("admin new");
         }
-        try {
-            assignmentService.newAssignment(Role.Company, "new one", "company new");
-        } catch (AuthorityException e) {
-            assert e instanceof AuthorityException;
-        }
+    }
 
+    @Test(expected = AuthorityException.class)
+    public void testAuthority() throws Exception {
+        assignmentService.newAssignment(Role.Company, "new one", "company new");
     }
 
     @Test
-    public void testDeleteAssignment() throws Exception {
-        try {
-            assignmentService.deleteAssignment(Role.Admin, 2);
-            Assignment assignment = assignmentService.findAssignment("new one");
-        } catch (NoSuchEntryException e) {
-            assert e instanceof NoSuchEntryException;
-        }
+    public void ztestDeleteAssignment() throws Exception {
+        assignmentService.deleteAssignment(Role.Admin, 2);
+        List<Assignment> assignments = assignmentService.findAssignment("new one");
+        assert assignments.size() == 0;
+    }
 
-        try {
-            assignmentService.deleteAssignment(Role.Admin, 2);
-        } catch (NoSuchEntryException e) {
-            assert e instanceof NoSuchEntryException;
-        }
+    @Test(expected = NoSuchEntryException.class)
+    public void zztestDeleteNonExistAssignment() throws Exception {
+        assignmentService.deleteAssignment(Role.Admin, 2);
     }
 }

@@ -3,7 +3,6 @@ package ooad.service.impl;
 import ooad.bean.Company;
 import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
-import ooad.common.CompleteStatus;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
 import ooad.common.exceptions.NoSuchEntryException;
@@ -35,11 +34,11 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public List<Module> getCModuleList(Role role,int company_id) throws AuthorityException {
+    public List<Module> getCModuleList(Role role,int company_id) throws AuthorityException, NoSuchEntryException {
         if( !role.equals(Role.Company) ) {
             throw new AuthorityException(role);
         }
-        return moduleDAO.getCModuleList(company_id);
+        return moduleDAO.getCModuleList(company_id);//TODO: catch NoSuchEntryException
     }
 
     @Override
@@ -49,15 +48,20 @@ public class CompanyService implements ICompanyService {
         }
         LocalDate todayLocalDate = LocalDate.now(ZoneId.of("America/Montreal"));
         Date date= Date.valueOf(todayLocalDate);
-        boolean result = moduleDAO.updateStatus(module_process_id,date, CompleteStatus.Completed);
-        return result;
+        try {
+            moduleDAO.updateStatus(module_process_id,date, ModuleProcess.COMPLETED);
+            return true;
+        } catch (NoSuchEntryException e) {//TODO: all exception
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
-    public ModuleProcess getModuleProcess(Role role,int module_process_id)throws AuthorityException{
+    public ModuleProcess getModuleProcess(Role role,int module_process_id) throws AuthorityException, NoSuchEntryException {
         if( !role.equals(Role.Company) ) {
             throw new AuthorityException(role);
         }
-        return moduleDAO.getModuleProcess(module_process_id);
+        return moduleDAO.getModuleProcess(module_process_id);//TODO: catch NoSuchEntryException
     }
 }

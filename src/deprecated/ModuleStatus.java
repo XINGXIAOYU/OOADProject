@@ -6,4 +6,5 @@ package ooad.common;
 public enum ModuleStatus {
     Published,
     Unpublished,
+    Banned,
 }

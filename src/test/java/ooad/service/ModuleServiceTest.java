@@ -1,7 +1,6 @@
 package ooad.service;
 
 import ooad.bean.Module;
-import ooad.common.ModuleStatus;
 import ooad.service.impl.ModuleService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +23,7 @@ public class ModuleServiceTest {
     public void testFindModule() throws Exception {
         List<Module> modules = moduleService.findModule("module test");
         Module dbModule = modules.get(0);
-        Module stdModule = new Module(1,"module test","test for module", ModuleStatus.Unpublished);
+        Module stdModule = new Module(1,"module test","test for module", Module.UNPUBLISHED);
         assert  dbModule.toString().equals(stdModule.toString());
     }
 

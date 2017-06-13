@@ -5,6 +5,7 @@ import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
+import ooad.common.exceptions.NoSuchEntryException;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface ICompanyService {
      *
      * @return 下发模板列表
      */
-    List<Module> getCModuleList(Role role,int company_id) throws AuthorityException;
+    List<Module> getCModuleList(Role role,int company_id) throws AuthorityException, NoSuchEntryException;
 
     /**
      * 录入排查结果
@@ -38,6 +39,6 @@ public interface ICompanyService {
      *
      * @return 模板进程
      */
-    ModuleProcess getModuleProcess(Role role,int module_process_id)throws AuthorityException;
+    ModuleProcess getModuleProcess(Role role,int module_process_id) throws AuthorityException, NoSuchEntryException;
 }
 

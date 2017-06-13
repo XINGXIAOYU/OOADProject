@@ -40,7 +40,7 @@ public class Company {
                 +"\ncontact: " + contact
                 +"\ntel: " + tel
                 +"\ndescription: " + description+
-                '}';;
+                "}";
     }
 
     public int getId() {

@@ -3,6 +3,7 @@ package ooad.service;
 import ooad.bean.Assignment;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
+import ooad.common.exceptions.NoSuchEntryException;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface IAssignmentService {
      *
      * @return 检查项目实体
      */
-    Assignment findAssignment(String assignment_name);
+    List<Assignment> findAssignment(String assignment_name) ;
 
     /**
      * 获取所有检查项目

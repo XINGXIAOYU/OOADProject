@@ -2,14 +2,15 @@ package ooad.dao;
 
 import ooad.bean.Assignment;
 import ooad.common.exceptions.NoSuchEntryException;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
 
-import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -19,29 +20,30 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring-config.xml")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AssignmentDAOTest {
     @Resource
     AssignmentDAO assignmentDAO;
 
     @Test
-    public void getAssignmentDAO() throws Exception{
+    public void agetAssignmentDAO() throws Exception{
         assertNotNull(assignmentDAO);
     }
 
     @Test
-    public void getSessionFactory() throws Exception {
+    public void agetSessionFactory() throws Exception {
         assertNotNull(assignmentDAO.getSessionFactory());
     }
 
     @Test
-    public void addAssignment() throws Exception {
+    public void baddAssignment() throws Exception {
         Assignment assignment = new Assignment("Test2", "Test");
         int newID = assignmentDAO.addAssignment(assignment);
         assertNotEquals(newID, -1);
     }
 
     @Test
-    public void getAssignments() throws Exception {//TODO: must assert?
+    public void cgetAssignments() throws Exception {//TODO: must assert?
         List<Assignment> assignmentList = assignmentDAO.getAssignments();
         for (Assignment assignment : assignmentList) {
             System.out.println(assignment);
@@ -63,12 +65,27 @@ public class AssignmentDAOTest {
     public void searchAssignment() throws Exception {
         Assignment assignment = assignmentDAO.searchAssignment(1);
         System.out.println(assignment);
+        Assignment shouldBeAssignment = new Assignment(1, "test assignment", "assignment for test");
+        assertEquals(shouldBeAssignment.toString(), assignment.toString());
     }
 
     @Test
-    public void searchAssignment1() throws Exception {
-        Assignment assignment = assignmentDAO.searchAssignment("Test");
-        System.out.println(assignment);
+    public void searchAssignmentByNameNone() throws Exception {
+        List<Assignment> assignments = assignmentDAO.searchAssignment("Test");
+        assertEquals(assignments.size(), 0);
+    }
+
+    @Test
+    public void searchAssignmentByName() throws Exception {
+        List<Assignment> assignments = assignmentDAO.searchAssignment("test assignment");
+        String answer = "";
+        for (Object o :
+                assignments) {
+            Assignment assignment = (Assignment) o;
+            answer += assignment;
+        }
+        Assignment shouldBeAssignment = new Assignment(1, "test assignment", "assignment for test");
+        assertEquals(answer, shouldBeAssignment.toString());
     }
 
 }
