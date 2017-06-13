@@ -22,11 +22,6 @@ public class Assignment {
         this.content = content;
     }
 
-    @Override
-    public String toString() {
-        return "Name: " + name + "\nContent: " + content;
-    }
-
     public int getId() {
         return id;
     }
@@ -50,4 +45,14 @@ public class Assignment {
     public void setContent(String content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "Assignment{" +
+                "assignmentId='" + id + '\'' +
+                ", assignmentName='" + name + '\'' +
+                ", assignmentContent=" + content +
+                '}';
+    }
+
 }

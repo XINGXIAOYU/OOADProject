@@ -1,7 +1,8 @@
 package ooad.service.impl;
 
 import ooad.bean.Assignment;
-import ooad.common.exceptions.NoSuchEntryException;
+import ooad.common.Role;
+import ooad.common.exceptions.AuthorityException;
 import ooad.dao.AssignmentDAO;
 import ooad.service.IAssignmentService;
 
@@ -26,7 +27,10 @@ public class AssignmentService implements IAssignmentService {
     }
 
     @Override
-    public Boolean newAssignment(String assignment_name, String assignment_content) {
+    public Boolean newAssignment(Role role, String assignment_name, String assignment_content) throws AuthorityException {
+        if( !role.equals(Role.Admin)){
+            throw new AuthorityException(role);
+        }
         Assignment assignment = new Assignment();
         assignment.setName(assignment_name);
         assignment.setContent(assignment_content);
@@ -35,7 +39,10 @@ public class AssignmentService implements IAssignmentService {
     }
 
     @Override
-    public Boolean deleteAssignment(int assignment_id) {
+    public Boolean deleteAssignment(Role role,int assignment_id) throws AuthorityException{
+        if( !role.equals(Role.Admin)){
+            throw new AuthorityException(role);
+        }
         try {
             assignmentDAO.deleteAssignment(assignment_id);
             return true;

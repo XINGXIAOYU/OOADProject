@@ -5,6 +5,6 @@ package ooad.common;
  */
 public enum Role {
     Admin,
-    Company
+    Company,
 }
 

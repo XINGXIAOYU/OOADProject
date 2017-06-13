@@ -1,6 +1,8 @@
 package ooad.service;
 
 import ooad.bean.Assignment;
+import ooad.common.Role;
+import ooad.common.exceptions.AuthorityException;
 
 import java.util.List;
 
@@ -27,12 +29,12 @@ public interface IAssignmentService {
      *
      * @return 新建是否成功
      */
-    Boolean newAssignment(String assignment_name, String assignment_content);
+    Boolean newAssignment(Role role,String assignment_name, String assignment_content) throws AuthorityException;
 
     /**
      * 删除检查项目
      *
      * @return 删除是否成功
      */
-    Boolean deleteAssignment(int assignment_id);
+    Boolean deleteAssignment(Role role,int assignment_id) throws AuthorityException;
 }

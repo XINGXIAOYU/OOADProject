@@ -31,7 +31,7 @@ public class Company {
 
     @Override
     public String toString() {
-        return "id: " + id
+        return "Company{" +"id: " + id
                 +"\norgCode: " + orgCode
                 +"\nname: " + name
                 +"\nstatus: " + status
@@ -39,7 +39,8 @@ public class Company {
                 +"\nindustry: " + industry
                 +"\ncontact: " + contact
                 +"\ntel: " + tel
-                +"\ndescription: " + description;
+                +"\ndescription: " + description+
+                '}';;
     }
 
     public int getId() {
