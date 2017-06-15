@@ -62,14 +62,16 @@ public class AssignmentServiceTest {
     }
 
     @Test
-    public void ztestDeleteAssignment() throws Exception {
-        assignmentService.deleteAssignment(Role.Admin, 2);
-        List<Assignment> assignments = assignmentService.findAssignment("new one");
-        assert assignments.size() == 0;
+    public void testDeleteAssignment() throws Exception {
+        List<Assignment> assignments = assignmentService.getAssignments();
+        assignmentService.deleteAssignment(Role.Admin, assignments.get(assignments.size() - 1).getId());
+        List<Assignment> assignments2 = assignmentService.findAssignment(assignments.get(assignments.size() - 1).getName());
+        assert assignments2.size() == 0;
     }
 
     @Test(expected = NoSuchEntryException.class)
-    public void zztestDeleteNonExistAssignment() throws Exception {
-        assignmentService.deleteAssignment(Role.Admin, 2);
+    public void testDeleteAssignmentNoSuchEntry() throws Exception {
+        assignmentService.deleteAssignment(Role.Admin, -1);
+
     }
 }

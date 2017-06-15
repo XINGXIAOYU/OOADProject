@@ -12,7 +12,7 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="url" value="jdbc:mysql://localhost:3306/OOAD" />
         <property name="username" value="root" />
-        <property name="password" value="root" />
+        <property name="password" value="" />
     </bean>
     <!-- Session Factory -->
     <bean id="sessionFactory"
@@ -31,6 +31,7 @@
                 <value>classpath:Module.hbm.xml</value>
                 <value>classpath:Company.hbm.xml</value>
                 <value>classpath:ModuleAssignment.hbm.xml</value>
+                <value>classpath:ModuleProcess.hbm.xml</value>
             </list>
         </property>
     </bean>

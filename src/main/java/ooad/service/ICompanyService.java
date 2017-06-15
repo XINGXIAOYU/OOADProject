@@ -32,7 +32,7 @@ public interface ICompanyService {
      *
      * @return 是否录入成功
      */
-    Boolean completeStatus(Role role,int module_process_id)throws AuthorityException;
+    Boolean completeStatus(Role role,int module_process_id) throws AuthorityException, NoSuchEntryException;
 
     /**
      * 获得模板进程项

@@ -79,22 +79,25 @@ public class ModuleService implements IModuleService {
     }
 
     @Override
-    public Boolean deleteAssignmentFromModule(Role role,int id)throws AuthorityException {
+    public Boolean deleteAssignmentFromModule(Role role,int module_id, int assignment_id) throws AuthorityException, NoSuchEntryException {
         if( !role.equals(Role.Admin) ) {
             throw new AuthorityException(role);
         }
-        try {
-            moduleDAO.deleteAssignmentToModule(id);
+       try {
+           moduleDAO.deleteAssignmentFromModule(module_id,assignment_id);
             return true;
-        } catch (NoSuchEntryException e) {
-            e.printStackTrace();
-            return false;
-        }
+       } catch (NoSuchEntryException e) {
+          throw new NoSuchEntryException();
+     }
     }
 
     @Override
     public List<Assignment> getModuleAssignments(int module_id) throws NoSuchEntryException {
-        return moduleDAO.getModuleAssignments(module_id);
+        try {
+            return moduleDAO.getModuleAssignments(module_id);
+        } catch (NoSuchEntryException e) {
+            throw new NoSuchEntryException();
+        }
         //TODO: throw OR catch?
     }
 
@@ -111,11 +114,20 @@ public class ModuleService implements IModuleService {
 
     @Override
     public List<Company> getModuleCompanys(int module_id) throws NoSuchEntryException {
-        return moduleDAO.getModuleCompanys(module_id);
+        try {
+            return moduleDAO.getModuleCompanys(module_id);
+        } catch (NoSuchEntryException e) {
+            throw new NoSuchEntryException();
+        }
     }
 
     @Override
     public List<ModuleProcess> getModuleProcesses(int module_id) throws NoSuchEntryException {
-        return moduleDAO.getModuleProcesses(module_id);
+        try {
+            return moduleDAO.getModuleProcesses(module_id);
+        } catch (NoSuchEntryException e) {
+            throw new NoSuchEntryException();
+        }
+        return null;
     }
 }

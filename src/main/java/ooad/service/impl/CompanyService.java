@@ -42,7 +42,7 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public Boolean completeStatus(Role role,int module_process_id) throws AuthorityException {
+    public Boolean completeStatus(Role role,int module_process_id) throws AuthorityException, NoSuchEntryException {
         if( !role.equals(Role.Company) ) {
             throw new AuthorityException(role);
         }
@@ -52,8 +52,7 @@ public class CompanyService implements ICompanyService {
             moduleDAO.updateStatus(module_process_id,date, ModuleProcess.COMPLETED);
             return true;
         } catch (NoSuchEntryException e) {//TODO: all exception
-            e.printStackTrace();
-            return false;
+            throw new NoSuchEntryException();
         }
     }
 

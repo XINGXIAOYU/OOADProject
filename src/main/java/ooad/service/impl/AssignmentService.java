@@ -40,7 +40,7 @@ public class AssignmentService implements IAssignmentService {
     }
 
     @Override
-    public Boolean deleteAssignment(Role role,int assignment_id) throws AuthorityException{
+    public Boolean deleteAssignment(Role role,int assignment_id) throws AuthorityException, NoSuchEntryException {
         if( !role.equals(Role.Admin)){
             throw new AuthorityException(role);
         }
@@ -48,8 +48,7 @@ public class AssignmentService implements IAssignmentService {
             assignmentDAO.deleteAssignment(assignment_id);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw new NoSuchEntryException();
         }
     }
 }

@@ -37,5 +37,5 @@ public interface IAssignmentService {
      *
      * @return 删除是否成功
      */
-    Boolean deleteAssignment(Role role,int assignment_id) throws AuthorityException;
+    Boolean deleteAssignment(Role role,int assignment_id) throws AuthorityException, NoSuchEntryException;
 }
