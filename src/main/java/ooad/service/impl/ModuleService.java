@@ -88,7 +88,6 @@ public class ModuleService implements IModuleService {
             return true;
         } catch (ForeignKeyConstraintException e) {
             throw e;
-            //TODO
         }
     }
 
@@ -102,7 +101,6 @@ public class ModuleService implements IModuleService {
             return true;
         } catch (NoSuchEntryException e) {
             throw e;
-            //TODO
         }
     }
 
@@ -113,7 +111,6 @@ public class ModuleService implements IModuleService {
         } catch (NoSuchEntryException e) {
             throw e;
         }
-        //TODO: catch and show warning
     }
 
     @Override
