@@ -1,7 +1,6 @@
 package ooad.bean;
 
 
-import java.sql.Date;
 
 /**
  * Created by xingxiaoyu on 17/6/7.
@@ -12,12 +11,12 @@ public class ModuleProcess {
     int id;
     int module_id;
     int company_id;
-    Date start_time;
-    Date finish_time;
-    Date company_finish_time;
+    String start_time;
+    String finish_time;
+    String company_finish_time;
     String status;
 
-    public ModuleProcess(int module_id, int company_id, Date start_time, Date finish_time) {
+    public ModuleProcess(int module_id, int company_id, String start_time, String finish_time) {
         this.module_id = module_id;
         this.company_id = company_id;
         this.start_time = start_time;
@@ -25,7 +24,10 @@ public class ModuleProcess {
         status = UNCOMPLETED;
     }
 
-    public ModuleProcess(int id, int module_id, int company_id, Date start_time, Date finish_time, Date company_finish_time, String status) {
+    public ModuleProcess() {
+    }
+
+    public ModuleProcess(int id, int module_id, int company_id, String start_time, String finish_time, String company_finish_time, String status) {
         this.id = id;
         this.module_id = module_id;
         this.company_id = company_id;
@@ -70,27 +72,27 @@ public class ModuleProcess {
         this.company_id = company_id;
     }
 
-    public Date getStart_time() {
+    public String getStart_time() {
         return start_time;
     }
 
-    public void setStart_time(Date start_time) {
+    public void setStart_time(String start_time) {
         this.start_time = start_time;
     }
 
-    public Date getFinish_time() {
+    public String getFinish_time() {
         return finish_time;
     }
 
-    public void setFinish_time(Date finish_time) {
+    public void setFinish_time(String finish_time) {
         this.finish_time = finish_time;
     }
 
-    public Date getCompany_finish_time() {
+    public String getCompany_finish_time() {
         return company_finish_time;
     }
 
-    public void setCompany_finish_time(Date company_finish_time) {
+    public void setCompany_finish_time(String company_finish_time) {
         this.company_finish_time = company_finish_time;
     }
 

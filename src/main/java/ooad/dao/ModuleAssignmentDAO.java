@@ -7,6 +7,8 @@ import ooad.common.exceptions.NoSuchEntryException;
 import org.hibernate.*;
 import org.hibernate.exception.ConstraintViolationException;
 
+import javax.persistence.PersistenceException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +45,20 @@ public class ModuleAssignmentDAO {
             transaction = session.beginTransaction();
             id = (Integer) session.save(newEntry);
             transaction.commit();
-        } catch (ConstraintViolationException e) {
-            throw new ForeignKeyConstraintException("The module or assignment is undefined!");
+        } catch (ConstraintViolationException  e) {
+            e.printStackTrace();
+            throw new ForeignKeyConstraintException("The assignment is attached to a module, cannot be deleted!");
         } catch (HibernateException e) {
             if(transaction != null) transaction.rollback();
             e.printStackTrace();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            Throwable throwable = e.getCause();
+            if (throwable instanceof ConstraintViolationException) {
+                throw new ForeignKeyConstraintException("The assignment is attached to a module, cannot be deleted!");
+            } else {
+                throw e;
+            }
         } finally {
             session.close();
         }
@@ -67,7 +78,7 @@ public class ModuleAssignmentDAO {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("attempt to create delete event with null entity")) {
-                throw new NoSuchEntryException();
+                throw new NoSuchEntryException(id+"");
             } else {
                 throw e;
             }

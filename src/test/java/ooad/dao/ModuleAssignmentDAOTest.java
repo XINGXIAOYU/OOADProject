@@ -33,35 +33,35 @@ public class ModuleAssignmentDAOTest {
 
 
     @Test
-    public void getDAO() throws Exception {
+    public void aGetDAO() throws Exception {
         assertNotNull(moduleAssignmentDAO);
     }
 
     @Test
-    public void getSessionFactory() throws Exception {
+    public void aGetSessionFactory() throws Exception {
         assertNotNull(moduleAssignmentDAO.getSessionFactory());
     }
 
     @Test
-    public void getAssignmentDAO() throws Exception {
+    public void bGetAssignmentDAO() throws Exception {
         assertNotNull(moduleAssignmentDAO.getAssignmentDAO());
     }
 
     @Test
-    public void get() throws Exception {
+    public void cGet() throws Exception {
         ModuleAssignment moduleAssignment = moduleAssignmentDAO.get(2);
-        ModuleAssignment shouldBe = new ModuleAssignment(1, 1);
-        assert moduleAssignment.equals(shouldBe);
+        ModuleAssignment shouldBe = new ModuleAssignment(1, 1,2);
+        assertEquals(shouldBe.toString(), moduleAssignment.toString());
     }
 
     @Test(expected = NoSuchEntryException.class)
-    public void getNonExist() throws Exception {
+    public void cGetNonExist() throws Exception {
         moduleAssignmentDAO.get(Integer.MAX_VALUE);
     }
 
     @Test
-    public void save() throws Exception {
-        ModuleAssignment moduleAssignment = new ModuleAssignment(1, 1);
+    public void dSave() throws Exception {
+        ModuleAssignment moduleAssignment = new ModuleAssignment(1, 2);
         int id = moduleAssignmentDAO.save(moduleAssignment);
         assertNotEquals(-1, id);
         ModuleAssignment moduleAssignment1 = moduleAssignmentDAO.get(id);
@@ -69,13 +69,12 @@ public class ModuleAssignmentDAOTest {
     }
 
     @Test(expected = ForeignKeyConstraintException.class)
-    public void saveFail() throws Exception {
-        ModuleAssignment moduleAssignment = new ModuleAssignment(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        assertEquals(-1, moduleAssignmentDAO.save(moduleAssignment));
+    public void dSaveFail() throws Exception {
+        moduleAssignmentDAO.save(new ModuleAssignment(Integer.MAX_VALUE, Integer.MAX_VALUE));
     }
 
     @Test
-    public void delete() throws Exception {
+    public void eDelete() throws Exception {
         ModuleAssignment toDelete = new ModuleAssignment(1, 1);
         int id = moduleAssignmentDAO.save(toDelete);
         moduleAssignmentDAO.delete(id);
@@ -85,13 +84,13 @@ public class ModuleAssignmentDAOTest {
     }
 
     @Test(expected = NoSuchEntryException.class)
-    public void deleteNonExist() throws Exception {
+    public void eDeleteNonExist() throws Exception {
         moduleAssignmentDAO.delete(Integer.MAX_VALUE);
     }
 
 
     @Test
-    public void getAssignmentsOfModule() throws Exception {
+    public void cGetAssignmentsOfModule() throws Exception {
         List<Assignment> assignments = moduleAssignmentDAO.getAssignmentsOfModule(1);
         String answer = "";
         for (Assignment assignment:

@@ -74,7 +74,7 @@ public class ModuleProcessDAO {
         return id;
     }
 
-    public void update(int moduleProcessId, Date date, String completed) throws NoSuchEntryException {
+    public void update(int moduleProcessId, String date, String completed) throws NoSuchEntryException {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try{
@@ -84,6 +84,9 @@ public class ModuleProcessDAO {
             moduleProcess.setStatus(completed);
             session.update(moduleProcess);
             tx.commit();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            throw new NoSuchEntryException(moduleProcessId+"");
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();

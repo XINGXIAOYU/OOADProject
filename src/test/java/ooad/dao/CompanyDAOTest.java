@@ -27,12 +27,12 @@ public class CompanyDAOTest {
     CompanyDAO companyDAO;
 
     @Test
-    public void agetSessionFactory() throws Exception {
+    public void aGetSessionFactory() throws Exception {
         assertNotNull(companyDAO.getSessionFactory());
     }
 
     @Test
-    public void agetCompanyDAO() throws Exception {
+    public void aGetCompanyDAO() throws Exception {
         assertNotNull(companyDAO);
     }
 

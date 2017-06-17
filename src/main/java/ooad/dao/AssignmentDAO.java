@@ -9,6 +9,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
 
+import javax.persistence.PersistenceException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 /**
@@ -69,11 +71,16 @@ public class AssignmentDAO {
             Assignment assignment = session.get(Assignment.class, assignmentId);
             session.delete(assignment);
             tx.commit();
-        } catch (ConstraintViolationException e) {
-            throw new ForeignKeyConstraintException("The assignment is attached to a module, cannot be deleted!");
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
+        } catch (PersistenceException e) {
+            Throwable throwable = e.getCause();
+            if (throwable instanceof ConstraintViolationException) {
+                throw new ForeignKeyConstraintException("The assignment is attached to a module, cannot be deleted!");
+            } else {
+                throw e;
+            }
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("attempt to create delete event with null entity")) {
                 throw new NoSuchEntryException();

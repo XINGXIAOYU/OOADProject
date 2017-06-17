@@ -58,8 +58,10 @@ public class ModuleService implements IModuleService {
             return true;
         } catch (NoSuchEntryException e) {
             throw e;
+        } catch (ForeignKeyConstraintException e) {
+            e.printStackTrace();
         }
-
+        return false;
     }
 
     @Override
@@ -119,9 +121,7 @@ public class ModuleService implements IModuleService {
         if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
-        Date start = StringToSqlDate.strToDate(start_time);
-        Date finish = StringToSqlDate.strToDate(finish_time);
-        ModuleProcess moduleProcess = new ModuleProcess(module_id, company_id, start, finish);
+        ModuleProcess moduleProcess = new ModuleProcess(module_id, company_id, start_time, finish_time);
         try {
             return moduleProcessDAO.save(moduleProcess) != -1;
         } catch (ForeignKeyConstraintException e) {

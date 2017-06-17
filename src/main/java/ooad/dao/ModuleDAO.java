@@ -1,12 +1,15 @@
 package ooad.dao;
 
 import ooad.bean.Module;
+import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.exception.ConstraintViolationException;
 
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
@@ -74,7 +77,7 @@ public class ModuleDAO {
         return id;
     }
 
-    public void delete(int moduleId) throws NoSuchEntryException {
+    public void delete(int moduleId) throws NoSuchEntryException, ForeignKeyConstraintException {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try{
@@ -82,9 +85,16 @@ public class ModuleDAO {
             Module module = session.get(Module.class, moduleId);
             session.delete(module);
             tx.commit();
-        }catch (HibernateException e) {
+        } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
+        } catch (PersistenceException e) {
+            Throwable throwable = e.getCause();
+            if (throwable instanceof ConstraintViolationException) {
+                throw new ForeignKeyConstraintException("The module is published, cannot be deleted!");
+            } else {
+                throw e;
+            }
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("attempt to create delete event with null entity")) {
                 throw new NoSuchEntryException();
@@ -106,12 +116,14 @@ public class ModuleDAO {
             module.setDescription(moduleContent);
             session.update(module);
             tx.commit();
-        }catch (HibernateException e) {
+        } catch (NullPointerException e) {
+            throw new NoSuchEntryException(moduleId+"");
+        } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("attempt to create delete event with null entity")) {
-                throw new NoSuchEntryException();
+                throw new NoSuchEntryException(moduleId+"");
             } else {
                 throw e;
             }

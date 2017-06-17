@@ -27,24 +27,24 @@ public class AssignmentDAOTest {
     AssignmentDAO assignmentDAO;
 
     @Test
-    public void agetAssignmentDAO() throws Exception{
+    public void aGetAssignmentDAO() throws Exception{
         assertNotNull(assignmentDAO);
     }
 
     @Test
-    public void agetSessionFactory() throws Exception {
+    public void aGetSessionFactory() throws Exception {
         assertNotNull(assignmentDAO.getSessionFactory());
     }
 
     @Test
-    public void baddAssignment() throws Exception {
+    public void bAddAssignment() throws Exception {
         Assignment assignment = new Assignment("Test2", "Test");
         int newID = assignmentDAO.addAssignment(assignment);
         assertNotEquals(newID, -1);
     }
 
     @Test
-    public void cgetAssignments() throws Exception {//TODO: must assert?
+    public void cGetAssignments() throws Exception {//TODO: must assert?
         List<Assignment> assignmentList = assignmentDAO.getAssignments();
         for (Assignment assignment : assignmentList) {
             System.out.println(assignment);

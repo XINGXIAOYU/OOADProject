@@ -6,6 +6,7 @@ package ooad.bean;
 public class Response {
     boolean isSuccess;
     String message;
+    Object object;
 
     public Response(boolean isSuccess, String message) {
         this.isSuccess = isSuccess;

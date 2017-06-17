@@ -22,6 +22,15 @@ public class ModuleAssignment {
         this.assignmentID = assignmentID;
     }
 
+    public ModuleAssignment() {
+    }
+
+    public ModuleAssignment(int moduleID, int assignmentID, int id) {
+        this.moduleID = moduleID;
+        this.assignmentID = assignmentID;
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "=========ModuleAssignment========\nid: " + id + "\nmoduleID: " + moduleID + "\nassignmentID: " + assignmentID;

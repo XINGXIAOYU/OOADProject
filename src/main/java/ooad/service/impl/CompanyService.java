@@ -55,7 +55,7 @@ public class CompanyService implements ICompanyService {
         LocalDate todayLocalDate = LocalDate.now(ZoneId.of("America/Montreal"));
         Date date = Date.valueOf(todayLocalDate);
         try {
-            moduleProcessDAO.update(module_process_id, date, ModuleProcess.COMPLETED);
+            moduleProcessDAO.update(module_process_id, date.toString(), ModuleProcess.COMPLETED);
             return true;
         } catch (NoSuchEntryException e) {
             throw e;
