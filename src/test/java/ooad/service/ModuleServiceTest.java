@@ -52,18 +52,18 @@ public class ModuleServiceTest {
 
     @Test
     public void testNewModule() throws Exception {
-        moduleService.newModule(Role.Admin, "new module", "new module admin");
+        moduleService.newModule(Role.Admin, "new module2", "new module admin");
         List<Module> modules = moduleService.getModules();
         assert modules.size() > 0;
         Module addModule = modules.get(modules.size() - 1);
-        assert addModule.getName().equals("new module");
+        assert addModule.getName().equals("new module2");
         assert addModule.getDescription().equals("new module admin");
 
     }
 
     @Test(expected = AuthorityException.class)
     public void testNewModuleAuthority() throws Exception {
-        moduleService.newModule(Role.Company, "new module", "new module admin");
+        moduleService.newModule(Role.Company, "new module2", "new module company");
     }
 
     @Test
@@ -236,7 +236,6 @@ public class ModuleServiceTest {
         String finishDate = "2017-08-01";
         moduleService.publishModule(Role.Admin, -1, -1, startDate, finishDate);
     }
-
 
     @Test
     public void testGetModuleCompanys() throws Exception {
