@@ -6,6 +6,7 @@ import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
+import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
 
 import java.util.List;
@@ -40,21 +41,21 @@ public interface IModuleService {
      *
      * @return 是否删除成功
      */
-    Boolean deleteModule(Role role,int module_id)throws AuthorityException;
+    Boolean deleteModule(Role role,int module_id) throws AuthorityException, NoSuchEntryException;
 
     /**
      * 修改模板名字或内容
      *
      * @return 是否修改成功
      */
-    Boolean modifyModule(Role role,int module_id, String module_name, String module_content)throws AuthorityException;
+    Boolean modifyModule(Role role,int module_id, String module_name, String module_content)throws AuthorityException,NoSuchEntryException;
 
     /**
      * 在模板中增加检查项目
      *
      * @return 是否增加成功
      */
-    Boolean addAssignmentToModule(Role role,int module_id, int assignment_id)throws AuthorityException;
+    Boolean addAssignmentToModule(Role role,int module_id, int assignment_id) throws AuthorityException, ForeignKeyConstraintException;
 
     /**
      * 在模板中删除检查项目
@@ -75,7 +76,7 @@ public interface IModuleService {
      *
      * @return 是否发放成功
      */
-    Boolean publishModule(Role role,int module_id, int company_id, String start_time, String finish_time)throws AuthorityException;
+    Boolean publishModule(Role role,int module_id, int company_id, String start_time, String finish_time)throws AuthorityException,ForeignKeyConstraintException;
 
     /**
      * 获得某个模板所对应的企业列表

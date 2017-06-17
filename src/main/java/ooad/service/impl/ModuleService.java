@@ -3,6 +3,7 @@ package ooad.service.impl;
 import ooad.bean.*;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
+import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
 import ooad.common.util.StringToSqlDate;
 import ooad.dao.ModuleAssignmentDAO;
@@ -48,7 +49,7 @@ public class ModuleService implements IModuleService {
     }
 
     @Override
-    public Boolean deleteModule(Role role, int module_id) throws AuthorityException {
+    public Boolean deleteModule(Role role, int module_id) throws AuthorityException, NoSuchEntryException {
         if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
@@ -56,13 +57,13 @@ public class ModuleService implements IModuleService {
             moduleDAO.delete(module_id);
             return true;
         } catch (NoSuchEntryException e) {
-            e.printStackTrace();
-            return false;
+            throw e;
         }
+
     }
 
     @Override
-    public Boolean modifyModule(Role role, int module_id, String module_name, String module_content) throws AuthorityException {
+    public Boolean modifyModule(Role role, int module_id, String module_name, String module_content) throws AuthorityException, NoSuchEntryException {
         if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
@@ -70,18 +71,23 @@ public class ModuleService implements IModuleService {
             moduleDAO.update(module_id, module_name, module_content);
             return true;
         } catch (NoSuchEntryException e) {
-            e.printStackTrace();
-            return false;
+            throw e;
         }
     }
 
     @Override
-    public Boolean addAssignmentToModule(Role role, int module_id, int assignment_id) throws AuthorityException {
+    public Boolean addAssignmentToModule(Role role, int module_id, int assignment_id) throws AuthorityException, ForeignKeyConstraintException {
         if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         ModuleAssignment newEntry = new ModuleAssignment(module_id, assignment_id);
-        return moduleAssignmentDAO.save(newEntry) != -1;
+        try {
+            moduleAssignmentDAO.save(newEntry);
+            return true;
+        } catch (ForeignKeyConstraintException e) {
+            throw e;
+            //TODO
+        }
     }
 
     @Override
@@ -93,7 +99,7 @@ public class ModuleService implements IModuleService {
             moduleAssignmentDAO.delete(id_moduleAssignment);
             return true;
         } catch (NoSuchEntryException e) {
-            throw new NoSuchEntryException();
+            throw e;
             //TODO
         }
     }
@@ -103,20 +109,24 @@ public class ModuleService implements IModuleService {
         try {
             return moduleAssignmentDAO.getAssignmentsOfModule(module_id);
         } catch (NoSuchEntryException e) {
-            throw new NoSuchEntryException();
+            throw e;
         }
         //TODO: catch and show warning
     }
 
     @Override
-    public Boolean publishModule(Role role, int module_id, int company_id, String start_time, String finish_time) throws AuthorityException {
+    public Boolean publishModule(Role role, int module_id, int company_id, String start_time, String finish_time) throws AuthorityException, ForeignKeyConstraintException {
         if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         Date start = StringToSqlDate.strToDate(start_time);
         Date finish = StringToSqlDate.strToDate(finish_time);
         ModuleProcess moduleProcess = new ModuleProcess(module_id, company_id, start, finish);
-        return moduleProcessDAO.save(moduleProcess);
+        try {
+            return moduleProcessDAO.save(moduleProcess) != -1;
+        } catch (ForeignKeyConstraintException e) {
+            throw e;
+        }
     }
 
     @Override
@@ -124,7 +134,7 @@ public class ModuleService implements IModuleService {
         try {
             return moduleProcessDAO.getCompaniesOfPublishedModule(module_id);
         } catch (NoSuchEntryException e) {
-            throw new NoSuchEntryException();
+            throw e;
         }
     }
 

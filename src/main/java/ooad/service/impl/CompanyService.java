@@ -37,33 +37,40 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public List<Module> getCModuleList(Role role,int company_id) throws AuthorityException, NoSuchEntryException {
-        if( !role.equals(Role.Company) ) {
+    public List<Module> getCModuleList(Role role, int company_id) throws AuthorityException, NoSuchEntryException {
+        if (!role.equals(Role.Company)) {
             throw new AuthorityException(role);
+        }try{
+            return moduleProcessDAO.getModulesOfCompany(company_id);
+        }catch (NoSuchEntryException e) {
+            throw e;
         }
-        return moduleProcessDAO.getModulesOfCompany(company_id);//TODO: catch NoSuchEntryException
     }
 
     @Override
-    public Boolean completeStatus(Role role,int module_process_id) throws AuthorityException, NoSuchEntryException {
-        if( !role.equals(Role.Company) ) {
+    public Boolean completeStatus(Role role, int module_process_id) throws AuthorityException, NoSuchEntryException {
+        if (!role.equals(Role.Company)) {
             throw new AuthorityException(role);
         }
         LocalDate todayLocalDate = LocalDate.now(ZoneId.of("America/Montreal"));
-        Date date= Date.valueOf(todayLocalDate);
+        Date date = Date.valueOf(todayLocalDate);
         try {
-            moduleProcessDAO.update(module_process_id,date, ModuleProcess.COMPLETED);
+            moduleProcessDAO.update(module_process_id, date, ModuleProcess.COMPLETED);
             return true;
         } catch (NoSuchEntryException e) {
-            throw new NoSuchEntryException();
+            throw e;
         }
     }
 
     @Override
-    public ModuleProcess getModuleProcess(Role role,int module_process_id) throws AuthorityException, NoSuchEntryException {
-        if( !role.equals(Role.Company) ) {
+    public ModuleProcess getModuleProcess(Role role, int module_process_id) throws AuthorityException, NoSuchEntryException {
+        if (!role.equals(Role.Company)) {
             throw new AuthorityException(role);
         }
-        return moduleProcessDAO.get(module_process_id);//TODO: catch NoSuchEntryException
+        try {
+            return moduleProcessDAO.get(module_process_id);
+        } catch (NoSuchEntryException e) {
+            throw e;
+        }
     }
 }

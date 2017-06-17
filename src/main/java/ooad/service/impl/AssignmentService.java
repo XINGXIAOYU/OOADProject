@@ -3,6 +3,7 @@ package ooad.service.impl;
 import ooad.bean.Assignment;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
+import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
 import ooad.dao.AssignmentDAO;
 import ooad.service.IAssignmentService;
@@ -29,7 +30,7 @@ public class AssignmentService implements IAssignmentService {
 
     @Override
     public Boolean newAssignment(Role role, String assignment_name, String assignment_content) throws AuthorityException {
-        if( !role.equals(Role.Admin)){
+        if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         Assignment assignment = new Assignment();
@@ -40,15 +41,17 @@ public class AssignmentService implements IAssignmentService {
     }
 
     @Override
-    public Boolean deleteAssignment(Role role,int assignment_id) throws AuthorityException, NoSuchEntryException {
-        if( !role.equals(Role.Admin)){
+    public Boolean deleteAssignment(Role role, int assignment_id) throws AuthorityException, NoSuchEntryException, ForeignKeyConstraintException {
+        if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         try {
             assignmentDAO.deleteAssignment(assignment_id);
             return true;
-        } catch (Exception e) {
-            throw new NoSuchEntryException();
+        } catch (NoSuchEntryException e) {
+            throw e;
+        } catch (ForeignKeyConstraintException e) {
+            throw e;
         }
     }
 }

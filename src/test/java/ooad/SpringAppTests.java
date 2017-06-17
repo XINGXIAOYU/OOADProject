@@ -6,6 +6,7 @@ import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
+import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
 import ooad.service.impl.AssignmentService;
 import ooad.service.impl.CompanyService;
@@ -62,6 +63,8 @@ public class SpringAppTests {
             e.printStackTrace();
         } catch (NoSuchEntryException e) {
             e.printStackTrace();
+        } catch (ForeignKeyConstraintException e) {
+            e.printStackTrace();
         }
 
         //企业发布模板给企业
@@ -78,6 +81,8 @@ public class SpringAppTests {
                     assert moduleService.publishModule(admin, module.getId(), company.getId(), "2016-07-01", "2017-07-01");
                     assert module.getModuleStatus().equals(Module.PUBLISHED);
                 } catch (AuthorityException e) {
+                    e.printStackTrace();
+                } catch (ForeignKeyConstraintException e) {
                     e.printStackTrace();
                 }
             }

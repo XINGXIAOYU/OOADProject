@@ -3,6 +3,7 @@ package ooad.service;
 import ooad.bean.Assignment;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
+import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
 import ooad.service.impl.AssignmentService;
 import org.junit.FixMethodOrder;
@@ -34,7 +35,7 @@ public class AssignmentServiceTest {
     }
 
     @Test
-    public void testGetAssignments() throws Exception {
+    public void testGetAssignments() {
         List<Assignment> assignments = assignmentService.getAssignments();
         if (assignments.size() > 0) {
             String name = (String) assignments.get(0).getName();
@@ -72,6 +73,18 @@ public class AssignmentServiceTest {
     @Test(expected = NoSuchEntryException.class)
     public void testDeleteAssignmentNoSuchEntry() throws Exception {
         assignmentService.deleteAssignment(Role.Admin, -1);
+
+    }
+
+    @Test(expected = AuthorityException.class)
+    public void testDeleteAssignmentAuthority() throws Exception {
+        assignmentService.deleteAssignment(Role.Company, 1);
+
+    }
+
+    @Test(expected = ForeignKeyConstraintException.class)
+    public void testForeignKeyConstraint() throws Exception {
+        assignmentService.deleteAssignment(Role.Admin, 1);
 
     }
 }

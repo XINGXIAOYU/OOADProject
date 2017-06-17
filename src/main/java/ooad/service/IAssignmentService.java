@@ -3,6 +3,7 @@ package ooad.service;
 import ooad.bean.Assignment;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
+import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
 
 import java.util.List;
@@ -37,5 +38,5 @@ public interface IAssignmentService {
      *
      * @return 删除是否成功
      */
-    Boolean deleteAssignment(Role role,int assignment_id) throws AuthorityException, NoSuchEntryException;
+    Boolean deleteAssignment(Role role,int assignment_id) throws AuthorityException, NoSuchEntryException, ForeignKeyConstraintException;
 }
