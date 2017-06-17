@@ -49,6 +49,11 @@ public class CompanyServiceTest {
         companyService.getCModuleList(Role.Admin, 1);
     }
 
+    @Test(expected = NoSuchEntryException.class)
+    public void testGetCModuleListNoSuchEntry() throws Exception {
+        companyService.getCModuleList(Role.Company, -1);
+    }
+
     @Test
     public void testCompleteStatus() throws Exception {
         boolean result = companyService.completeStatus(Role.Company, 1);
@@ -68,4 +73,22 @@ public class CompanyServiceTest {
     public void testCompleteStatusNoSuchEntry() throws Exception {
         companyService.completeStatus(Role.Company, -1);
     }
+
+    @Test
+    public void testModuleProcess() throws Exception {
+        ModuleProcess process = companyService.getModuleProcess(Role.Company, 1);
+        assert process.getModule_id() == 1;
+        assert process.getCompany_id() == 1;
+    }
+
+    @Test(expected = AuthorityException.class)
+    public void testModuleProcessAuthority() throws Exception {
+        companyService.completeStatus(Role.Admin, 1);
+    }
+
+    @Test(expected = NoSuchEntryException.class)
+    public void testModuleProcessNoSuchEntry() throws Exception {
+        companyService.completeStatus(Role.Company, -1);
+    }
+
 }

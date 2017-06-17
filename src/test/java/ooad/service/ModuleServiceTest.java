@@ -6,6 +6,7 @@ import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
+import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
 import ooad.service.impl.AssignmentService;
 import ooad.service.impl.CompanyService;
@@ -77,6 +78,12 @@ public class ModuleServiceTest {
 
     }
 
+    @Test(expected = AuthorityException.class)
+    public void testDeleteModuleAuthority() throws Exception {
+        List<Module> modules = moduleService.getModules();
+        moduleService.deleteModule(Role.Company, modules.get(modules.size() - 1).getId());
+    }
+
     @Test
     public void testModifyModule() throws Exception {
         List<Module> modules = moduleService.findModule("new module");
@@ -101,21 +108,9 @@ public class ModuleServiceTest {
 
     }
 
-    @Test
-    public void testGetModuleAssignments() throws Exception {
-        List<Module> modules = moduleService.findModule("test module");
-        Module module = modules.get(0);
-        List<Assignment> assignments = moduleService.getModuleAssignments(module.getId());
-        if (assignments.size() > 0) {
-            assert assignments.get(0).getId() == 1;
-            assert assignments.get(0).getName().equals("test assignment");
-            assert assignments.get(0).getContent().equals("assignment for test");
-        }
-    }
-
     @Test(expected = NoSuchEntryException.class)
-    public void testGetModuleAssignmentsNoSuchEntry() throws Exception {
-        moduleService.getModuleAssignments(-1);
+    public void testModifyModuleNoSuchEntry() throws Exception {
+        moduleService.modifyModule(Role.Company, -1, "new module", "modified_company");
     }
 
     @Test
@@ -149,57 +144,72 @@ public class ModuleServiceTest {
         }
     }
 
+    @Test(expected = ForeignKeyConstraintException.class)
+    public void testAddAssignmentToModuleForeignKeyConstraint() throws Exception {
+        moduleService.addAssignmentToModule(Role.Company, -1, 1);
+        moduleService.addAssignmentToModule(Role.Company, 1, -1);
+    }
+
     @Test
     public void testDeleteAssignmentFromModule() throws Exception {
-        //TODO
-//        List<Module> modules = moduleService.getAll();
-//        if (modules.size() > 0) {
-//            Module module = modules.get(0);
-//            List<Assignment> assignments = moduleService.getModuleAssignments(module.getId());
-//            if (assignments.size() > 0) {
-//                Assignment assignment = assignments.get(assignments.size() - 1);
-//                moduleService.deleteModuleAssignment(Role.Admin, module.getId(), assignment.getId());
-//                List<Assignment> assignments2 = moduleService.getModuleAssignments(module.getId());
-//                boolean hasDeletedAssignment = true;
-//                for (Assignment i : assignments2) {
-//                    if (i.getId() == assignment.getId()) {
-//                        hasDeletedAssignment = false;
-//                    }
-//                }
-//                assert hasDeletedAssignment == true;
-//            }
-//        }
+        List<Module> modules = moduleService.getModules();
+        if (modules.size() > 0) {
+            Module module = modules.get(0);
+            List<Assignment> assignments = moduleService.getModuleAssignments(module.getId());
+            if (assignments.size() > 0) {
+                Assignment assignment = assignments.get(assignments.size() - 1);
+                moduleService.deleteAssignmentFromModule(Role.Admin, module.getId(), assignment.getId());
+                List<Assignment> assignments2 = moduleService.getModuleAssignments(module.getId());
+                boolean hasDeletedAssignment = true;
+                for (Assignment i : assignments2) {
+                    if (i.getId() == assignment.getId()) {
+                        hasDeletedAssignment = false;
+                    }
+                }
+                assert hasDeletedAssignment == true;
+            }
+        }
     }
 
     @Test(expected = AuthorityException.class)
     public void testDeleteAssignmentFromModuleAuthority() throws Exception {
-        //TODO
-//        List<Module> modules = moduleService.getAll();
-//        if (modules.size() > 0) {
-//            Module module = modules.get(0);
-//            List<Assignment> assignments = moduleService.getModuleAssignments(module.getId());
-//            if (assignments.size() > 0) {
-//                Assignment assignment = assignments.get(assignments.size() - 1);
-//                moduleService.deleteModuleAssignment(Role.Company, module.getId(), assignment.getId());
-//            }
-//        }
+        List<Module> modules = moduleService.getModules();
+        if (modules.size() > 0) {
+            Module module = modules.get(0);
+            List<Assignment> assignments = moduleService.getModuleAssignments(module.getId());
+            if (assignments.size() > 0) {
+                Assignment assignment = assignments.get(assignments.size() - 1);
+                moduleService.deleteAssignmentFromModule(Role.Company, module.getId(), assignment.getId());
+            }
+        }
     }
 
-//    @Test(expected = NoSuchEntryException.class)
-    public void testAddAssignmentToModuleNoSuchEntry() throws Exception {
-        //TODO
-//        List<Module> modules = moduleService.getAll();
-//        if (modules.size() > 0) {
-//            Module module = modules.get(0);
-//            moduleService.deleteModuleAssignment(Role.Admin, module.getId(), -1);
-//        }
+    @Test(expected = NoSuchEntryException.class)
+    public void testDeleteAssignmentFromModuleNoSuchEntry() throws Exception {
+        moduleService.deleteAssignmentFromModule(Role.Admin, -1, -1);
     }
 
+    @Test
+    public void testGetModuleAssignments() throws Exception {
+        List<Module> modules = moduleService.findModule("test module");
+        Module module = modules.get(0);
+        List<Assignment> assignments = moduleService.getModuleAssignments(module.getId());
+        if (assignments.size() > 0) {
+            assert assignments.get(0).getId() == 1;
+            assert assignments.get(0).getName().equals("test assignment");
+            assert assignments.get(0).getContent().equals("assignment for test");
+        }
+    }
+
+    @Test(expected = NoSuchEntryException.class)
+    public void testGetModuleAssignmentsNoSuchEntry() throws Exception {
+        moduleService.getModuleAssignments(-1);
+    }
 
     @Test
     public void testPublishModule() throws Exception {
         List<Module> modules = moduleService.getModules();
-        if(modules.size()>0) {
+        if (modules.size() > 0) {
             Module module = modules.get(0);
             assert module.getModuleStatus().equals(Module.UNPUBLISHED);
             List<Company> companies = companyService.getCompanys();
@@ -228,10 +238,18 @@ public class ModuleServiceTest {
         moduleService.publishModule(Role.Company, 2, 1, startDate, finishDate);
     }
 
+    @Test(expected = ForeignKeyConstraintException.class)
+    public void testPublishModuleForeignKeyConstraint() throws Exception {
+        String startDate = "2017-07-01";
+        String finishDate = "2017-08-01";
+        moduleService.publishModule(Role.Admin, -1, -1, startDate, finishDate);
+    }
+
+
     @Test
     public void testGetModuleCompanys() throws Exception {
         List<Module> modules = moduleService.getModules();
-        if(modules.size()>0) {
+        if (modules.size() > 0) {
             Module module = modules.get(0);
             if (module.getModuleStatus().equals(Module.PUBLISHED)) {
                 List<Company> module_companys = moduleService.getModuleCompanys(module.getId());
@@ -248,7 +266,7 @@ public class ModuleServiceTest {
     @Test
     public void testGetModuleProcesses() throws Exception {
         List<Module> modules = moduleService.getModules();
-        if(modules.size()>0) {
+        if (modules.size() > 0) {
             Module module = modules.get(0);
             List<ModuleProcess> moduleProcesses = moduleService.getModuleProcesses(module.getId());
             if (moduleProcesses.size() > 0) {
@@ -258,10 +276,4 @@ public class ModuleServiceTest {
             }
         }
     }
-
-    @Test(expected = NoSuchEntryException.class)
-    public void testGetModuleProcessesNoSuchEntry() throws Exception {
-        moduleService.getModuleProcesses(-1);
-    }
-
 }
