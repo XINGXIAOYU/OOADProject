@@ -1,6 +1,7 @@
 package ooad.dao;
 
 import ooad.bean.Assignment;
+import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -53,6 +54,11 @@ public class AssignmentDAOTest {
     @Test(expected = NoSuchEntryException.class)
     public void deleteNonExistAssignment() throws Exception {
         assignmentDAO.deleteAssignment(Integer.MAX_VALUE);
+    }
+
+    @Test(expected = ForeignKeyConstraintException.class)
+    public void deleteAssignmentFail() throws Exception {
+        assignmentDAO.deleteAssignment(1);
     }
 
     @Test

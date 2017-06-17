@@ -8,6 +8,7 @@ import ooad.common.exceptions.AuthorityException;
 import ooad.common.exceptions.NoSuchEntryException;
 import ooad.dao.CompanyDAO;
 import ooad.dao.ModuleDAO;
+import ooad.dao.ModuleProcessDAO;
 import ooad.service.ICompanyService;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,8 @@ public class CompanyService implements ICompanyService {
     CompanyDAO companyDAO;
     @Resource
     ModuleDAO moduleDAO;
+    @Resource
+    ModuleProcessDAO moduleProcessDAO;
 
     @Override
     public List<Company> getCompanys() {
@@ -38,7 +41,7 @@ public class CompanyService implements ICompanyService {
         if( !role.equals(Role.Company) ) {
             throw new AuthorityException(role);
         }
-        return moduleDAO.getCModuleList(company_id);//TODO: catch NoSuchEntryException
+        return moduleProcessDAO.getModulesOfCompany(company_id);//TODO: catch NoSuchEntryException
     }
 
     @Override
@@ -49,9 +52,9 @@ public class CompanyService implements ICompanyService {
         LocalDate todayLocalDate = LocalDate.now(ZoneId.of("America/Montreal"));
         Date date= Date.valueOf(todayLocalDate);
         try {
-            moduleDAO.updateStatus(module_process_id,date, ModuleProcess.COMPLETED);
+            moduleProcessDAO.update(module_process_id,date, ModuleProcess.COMPLETED);
             return true;
-        } catch (NoSuchEntryException e) {//TODO: all exception
+        } catch (NoSuchEntryException e) {
             throw new NoSuchEntryException();
         }
     }
@@ -61,6 +64,6 @@ public class CompanyService implements ICompanyService {
         if( !role.equals(Role.Company) ) {
             throw new AuthorityException(role);
         }
-        return moduleDAO.getModuleProcess(module_process_id);//TODO: catch NoSuchEntryException
+        return moduleProcessDAO.get(module_process_id);//TODO: catch NoSuchEntryException
     }
 }

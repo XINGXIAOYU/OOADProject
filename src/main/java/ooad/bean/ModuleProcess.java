@@ -35,6 +35,17 @@ public class ModuleProcess {
         this.status = status;
     }
 
+    @Override
+    public String toString() {
+        return "======ModuleProcess=======\nid: " + id
+                + "\nmodule_id: " + module_id
+                + "\ncompany_id: " + company_id
+                + "\nstart_time: " + start_time
+                + "\nfinish_time: " + finish_time
+                + "\ncompany_finish_time: " + (company_finish_time == null? "NULL":company_finish_time)
+                + "\nstatus: " + status;
+    }
+
     public int getId() {
         return id;
     }

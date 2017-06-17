@@ -55,4 +55,7 @@ public class Assignment {
                 '}';
     }
 
+    public boolean equals(Assignment assignment) {
+        return assignment.id == id && name.equals(assignment.name) && content.equals(assignment.content);
+    }
 }

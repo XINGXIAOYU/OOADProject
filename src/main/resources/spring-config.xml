@@ -12,7 +12,7 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="url" value="jdbc:mysql://localhost:3306/OOAD" />
         <property name="username" value="root" />
-        <property name="password" value="" />
+        <property name="password" value="root" />
     </bean>
     <!-- Session Factory -->
     <bean id="sessionFactory"
@@ -44,8 +44,16 @@
     </bean>
     <bean id="ModuleDao" class="ooad.dao.ModuleDAO">
         <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="ModuleAssignmentDao" class="ooad.dao.ModuleAssignmentDAO">
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="assignmentDAO" ref="AssignmentDao"/>
+    </bean>
+    <bean id="ModuleProcessDao" class="ooad.dao.ModuleProcessDAO">
+        <property name="sessionFactory" ref="sessionFactory"/>
         <property name="assignmentDAO" ref="AssignmentDao"/>
         <property name="companyDAO" ref="CompanyDao"/>
+        <property name="moduleDAO" ref="ModuleDao"/>
     </bean>
     <bean id="AssignmentService" class="ooad.service.impl.AssignmentService"></bean>
     <bean id="CompanyService" class="ooad.service.impl.CompanyService"></bean>

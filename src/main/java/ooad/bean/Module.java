@@ -37,6 +37,10 @@ public class Module {
                 +"\nstatus : " + moduleStatus.toString();
     }
 
+    public boolean equals(Module module) {
+        return this.toString().equals(module.toString());
+    }
+
     public String getModuleStatus() {
         return moduleStatus;
     }

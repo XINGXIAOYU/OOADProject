@@ -5,7 +5,9 @@ import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
 import ooad.common.exceptions.NoSuchEntryException;
 import ooad.common.util.StringToSqlDate;
+import ooad.dao.ModuleAssignmentDAO;
 import ooad.dao.ModuleDAO;
+import ooad.dao.ModuleProcessDAO;
 import ooad.service.IModuleService;
 
 import javax.annotation.Resource;
@@ -18,36 +20,40 @@ import java.util.List;
 public class ModuleService implements IModuleService {
     @Resource
     ModuleDAO moduleDAO;
+    @Resource
+    ModuleAssignmentDAO moduleAssignmentDAO;
+    @Resource
+    ModuleProcessDAO moduleProcessDAO;
 
     @Override
     public List<Module> findModule(String module_name) {
-        return moduleDAO.findModule(module_name);
+        return moduleDAO.getModulesByName(module_name);
     }
 
     @Override
     public List<Module> getModules() {
-        return moduleDAO.getModules();
+        return moduleDAO.getAll();
     }
 
     @Override
-    public Boolean newModule(Role role,String module_name, String module_content)throws AuthorityException {
-        if( !role.equals(Role.Admin) ) {
+    public Boolean newModule(Role role, String module_name, String module_content) throws AuthorityException {
+        if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         Module newModule = new Module();
         newModule.setName(module_name);
         newModule.setDescription(module_content);
-        int result = moduleDAO.addModule(newModule);
+        int result = moduleDAO.save(newModule);
         return result != -1;
     }
 
     @Override
-    public Boolean deleteModule(Role role,int module_id)throws AuthorityException {
-        if( !role.equals(Role.Admin) ) {
+    public Boolean deleteModule(Role role, int module_id) throws AuthorityException {
+        if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         try {
-            moduleDAO.deleteModule(module_id);
+            moduleDAO.delete(module_id);
             return true;
         } catch (NoSuchEntryException e) {
             e.printStackTrace();
@@ -56,12 +62,12 @@ public class ModuleService implements IModuleService {
     }
 
     @Override
-    public Boolean modifyModule(Role role,int module_id, String module_name, String module_content)throws AuthorityException {
-        if( !role.equals(Role.Admin) ) {
+    public Boolean modifyModule(Role role, int module_id, String module_name, String module_content) throws AuthorityException {
+        if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         try {
-            moduleDAO.updateModule(module_id, module_name, module_content);
+            moduleDAO.update(module_id, module_name, module_content);
             return true;
         } catch (NoSuchEntryException e) {
             e.printStackTrace();
@@ -70,64 +76,60 @@ public class ModuleService implements IModuleService {
     }
 
     @Override
-    public Boolean addAssignmentToModule(Role role,int module_id, int assignment_id)throws AuthorityException {
-        if( !role.equals(Role.Admin) ) {
+    public Boolean addAssignmentToModule(Role role, int module_id, int assignment_id) throws AuthorityException {
+        if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         ModuleAssignment newEntry = new ModuleAssignment(module_id, assignment_id);
-        return moduleDAO.addAssignmentToModule(newEntry) != -1;
+        return moduleAssignmentDAO.save(newEntry) != -1;
     }
 
     @Override
-    public Boolean deleteAssignmentFromModule(Role role,int module_id, int assignment_id) throws AuthorityException, NoSuchEntryException {
-        if( !role.equals(Role.Admin) ) {
+    public Boolean deleteAssignmentFromModule(Role role, int id_moduleAssignment) throws AuthorityException, NoSuchEntryException {
+        if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
-       try {
-           moduleDAO.deleteAssignmentFromModule(module_id,assignment_id);
+        try {
+            moduleAssignmentDAO.delete(id_moduleAssignment);
             return true;
-       } catch (NoSuchEntryException e) {
-          throw new NoSuchEntryException();
-     }
+        } catch (NoSuchEntryException e) {
+            throw new NoSuchEntryException();
+            //TODO
+        }
     }
 
     @Override
     public List<Assignment> getModuleAssignments(int module_id) throws NoSuchEntryException {
         try {
-            return moduleDAO.getModuleAssignments(module_id);
+            return moduleAssignmentDAO.getAssignmentsOfModule(module_id);
         } catch (NoSuchEntryException e) {
             throw new NoSuchEntryException();
         }
-        //TODO: throw OR catch?
+        //TODO: catch and show warning
     }
 
     @Override
-    public Boolean publishModule(Role role,int module_id, int company_id, String start_time, String finish_time) throws AuthorityException{
-        if( !role.equals(Role.Admin) ) {
+    public Boolean publishModule(Role role, int module_id, int company_id, String start_time, String finish_time) throws AuthorityException {
+        if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         Date start = StringToSqlDate.strToDate(start_time);
         Date finish = StringToSqlDate.strToDate(finish_time);
         ModuleProcess moduleProcess = new ModuleProcess(module_id, company_id, start, finish);
-        return moduleDAO.addModuleCompany(moduleProcess);
+        return moduleProcessDAO.save(moduleProcess);
     }
 
     @Override
     public List<Company> getModuleCompanys(int module_id) throws NoSuchEntryException {
         try {
-            return moduleDAO.getModuleCompanys(module_id);
+            return moduleProcessDAO.getCompaniesOfPublishedModule(module_id);
         } catch (NoSuchEntryException e) {
             throw new NoSuchEntryException();
         }
     }
 
     @Override
-    public List<ModuleProcess> getModuleProcesses(int module_id) throws NoSuchEntryException {
-        try {
-            return moduleDAO.getModuleProcesses(module_id);
-        } catch (NoSuchEntryException e) {
-            throw new NoSuchEntryException();
-        }
-        return null;
+    public List<ModuleProcess> getModuleProcesses(int module_id) {
+        return moduleProcessDAO.getModuleProcesses(module_id);
     }
 }

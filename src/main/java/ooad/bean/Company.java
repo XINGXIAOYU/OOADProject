@@ -43,6 +43,10 @@ public class Company {
                 "}";
     }
 
+    public boolean equals(Company company) {
+        return this.toString().equals(company.toString());
+    }
+
     public int getId() {
         return id;
     }

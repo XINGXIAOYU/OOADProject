@@ -1,11 +1,14 @@
 package ooad.dao;
 
-import ooad.common.exceptions.NoSuchEntryException;
-import org.hibernate.*;
 import ooad.bean.Assignment;
+import ooad.common.exceptions.ForeignKeyConstraintException;
+import ooad.common.exceptions.NoSuchEntryException;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.exception.ConstraintViolationException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -58,15 +61,17 @@ public class AssignmentDAO {
     }
 
 
-    public void deleteAssignment(int assignmentId) throws NoSuchEntryException {
+    public void deleteAssignment(int assignmentId) throws NoSuchEntryException, ForeignKeyConstraintException {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try{
             tx = session.beginTransaction();
             Assignment assignment = session.get(Assignment.class, assignmentId);
-            session.delete(assignment);//TODO: foriegn key constraint
+            session.delete(assignment);
             tx.commit();
-        }catch (HibernateException e) {
+        } catch (ConstraintViolationException e) {
+            throw new ForeignKeyConstraintException("The assignment is attached to a module, cannot be deleted!");
+        } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
         } catch (IllegalArgumentException e) {

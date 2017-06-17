@@ -1,7 +1,5 @@
 package ooad;
 
-import ooad.bean.Assignment;
-import ooad.dao.AssignmentDAO;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

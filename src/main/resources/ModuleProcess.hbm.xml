@@ -8,7 +8,7 @@
         <meta attribute="class-description">
             This class contains the post detail.
         </meta>
-        <id name="id" type="int" column="id">
+        <id name="id" type="int" column="idModuleProcess">
             <generator class="native"/>
         </id>
         <property name="module_id" column="module_id" type="int"/>
@@ -17,6 +17,5 @@
         <property name="finish_time" column="finish_time" type="java.util.Date"/>
         <property name="company_finish_time" column="company_finish_time" type="java.util.Date"/>
         <property name="status" column="status" type="string"/>
-        <!--TODO: enum -> string-->
     </class>
 </hibernate-mapping>
