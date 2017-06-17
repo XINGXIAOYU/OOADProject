@@ -27,7 +27,9 @@ import java.util.List;
 public class ModuleServiceTest {
     @Resource
     ModuleService moduleService;
+    @Resource
     AssignmentService assignmentService;
+    @Resource
     CompanyService companyService;
 
     @Test
@@ -110,7 +112,7 @@ public class ModuleServiceTest {
 
     @Test(expected = NoSuchEntryException.class)
     public void testModifyModuleNoSuchEntry() throws Exception {
-        moduleService.modifyModule(Role.Company, -1, "new module", "modified_company");
+        moduleService.modifyModule(Role.Admin, -1, "new module", "modified_company");
     }
 
     @Test
@@ -146,8 +148,8 @@ public class ModuleServiceTest {
 
     @Test(expected = ForeignKeyConstraintException.class)
     public void testAddAssignmentToModuleForeignKeyConstraint() throws Exception {
-        moduleService.addAssignmentToModule(Role.Company, -1, 1);
-        moduleService.addAssignmentToModule(Role.Company, 1, -1);
+        moduleService.addAssignmentToModule(Role.Admin, -1, 1);
+        moduleService.addAssignmentToModule(Role.Admin, 1, -1);
     }
 
     @Test
@@ -184,11 +186,6 @@ public class ModuleServiceTest {
         }
     }
 
-    @Test(expected = NoSuchEntryException.class)
-    public void testDeleteAssignmentFromModuleNoSuchEntry() throws Exception {
-        moduleService.deleteAssignmentFromModule(Role.Admin, -1, -1);
-    }
-
     @Test
     public void testGetModuleAssignments() throws Exception {
         List<Module> modules = moduleService.findModule("test module");
@@ -199,11 +196,6 @@ public class ModuleServiceTest {
             assert assignments.get(0).getName().equals("test assignment");
             assert assignments.get(0).getContent().equals("assignment for test");
         }
-    }
-
-    @Test(expected = NoSuchEntryException.class)
-    public void testGetModuleAssignmentsNoSuchEntry() throws Exception {
-        moduleService.getModuleAssignments(-1);
     }
 
     @Test
@@ -256,11 +248,6 @@ public class ModuleServiceTest {
                 assert module_companys.size() > 0;
             }
         }
-    }
-
-    @Test(expected = NoSuchEntryException.class)
-    public void testGetModuleCompanysNoSuchEntry() throws Exception {
-        moduleService.getModuleCompanys(-1);
     }
 
     @Test

@@ -41,9 +41,7 @@ public class ModuleService implements IModuleService {
         if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
-        Module newModule = new Module();
-        newModule.setName(module_name);
-        newModule.setDescription(module_content);
+        Module newModule = new Module(module_name, module_content);
         int result = moduleDAO.save(newModule);
         return result != -1;
     }
@@ -92,12 +90,12 @@ public class ModuleService implements IModuleService {
     }
 
     @Override
-    public Boolean deleteAssignmentFromModule(Role role, int id_moduleAssignment) throws AuthorityException, NoSuchEntryException {
+    public Boolean deleteAssignmentFromModule(Role role, int module_id, int assignment_id) throws AuthorityException, NoSuchEntryException {
         if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         try {
-            moduleAssignmentDAO.delete(id_moduleAssignment);
+            moduleAssignmentDAO.delete(module_id, assignment_id);
             return true;
         } catch (NoSuchEntryException e) {
             throw e;

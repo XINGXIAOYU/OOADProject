@@ -87,6 +87,32 @@ public class ModuleAssignmentDAO {
         }
     }
 
+    public void delete(int moduleId, int assignmentId) throws NoSuchEntryException {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            String sql = "SELECT idmodule_assignment FROM module_assignment WHERE module_id = :moduleId AND assignment_id = :assignmentId";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+            query.setParameter("moduleId", moduleId);
+            query.setParameter("assignmentId", assignmentId);
+            List result = query.list();
+            tx.commit();
+            for (Object object :
+                    result) {
+                Map row = (Map)object;
+                int id = (Integer) row.get("idmodule_assignment");
+                delete(id);
+            }
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
     public ModuleAssignment get(int moduleAssignmentId) throws NoSuchEntryException {
         Session session = sessionFactory.openSession();
         Transaction tx = null;

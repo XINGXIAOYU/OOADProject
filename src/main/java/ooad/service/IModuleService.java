@@ -62,7 +62,7 @@ public interface IModuleService {
      *
      * @return 是否删除成功
      */
-    Boolean deleteAssignmentFromModule(Role role,int id) throws AuthorityException, NoSuchEntryException;
+    Boolean deleteAssignmentFromModule(Role role,int module_id, int assignment_id) throws AuthorityException, NoSuchEntryException;
 
     /**
      * 获得模板中的检查项目列表

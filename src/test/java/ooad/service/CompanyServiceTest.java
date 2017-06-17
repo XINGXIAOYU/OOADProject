@@ -49,11 +49,6 @@ public class CompanyServiceTest {
         companyService.getCModuleList(Role.Admin, 1);
     }
 
-    @Test(expected = NoSuchEntryException.class)
-    public void testGetCModuleListNoSuchEntry() throws Exception {
-        companyService.getCModuleList(Role.Company, -1);
-    }
-
     @Test
     public void testCompleteStatus() throws Exception {
         boolean result = companyService.completeStatus(Role.Company, 1);
