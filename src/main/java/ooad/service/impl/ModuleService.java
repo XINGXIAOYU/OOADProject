@@ -5,14 +5,12 @@ import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
 import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
-import ooad.common.util.StringToSqlDate;
 import ooad.dao.ModuleAssignmentDAO;
 import ooad.dao.ModuleDAO;
 import ooad.dao.ModuleProcessDAO;
 import ooad.service.IModuleService;
 
 import javax.annotation.Resource;
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -112,14 +110,24 @@ public class ModuleService implements IModuleService {
     }
 
     @Override
-    public Boolean publishModule(Role role, int module_id, int company_id, String start_time, String finish_time) throws AuthorityException, ForeignKeyConstraintException {
+    public Boolean publishModule(Role role, int module_id, int company_id, String start_time, String finish_time) throws AuthorityException, ForeignKeyConstraintException, NoSuchEntryException {
         if (!role.equals(Role.Admin)) {
             throw new AuthorityException(role);
         }
         ModuleProcess moduleProcess = new ModuleProcess(module_id, company_id, start_time, finish_time);
         try {
-            return moduleProcessDAO.save(moduleProcess) != -1;
+            int id = moduleProcessDAO.save(moduleProcess);
+            if (id != -1 ) {
+                moduleDAO.update(module_id, Module.PUBLISHED);
+                return true;
+            } else {
+                return false;
+            }
         } catch (ForeignKeyConstraintException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (NoSuchEntryException e) {
+            e.printStackTrace();
             throw e;
         }
     }

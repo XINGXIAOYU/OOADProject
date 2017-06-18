@@ -84,6 +84,8 @@ public class SpringAppTests {
                     e.printStackTrace();
                 } catch (ForeignKeyConstraintException e) {
                     e.printStackTrace();
+                } catch (NoSuchEntryException e) {
+                    e.printStackTrace();
                 }
             }
         }

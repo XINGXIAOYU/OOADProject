@@ -76,7 +76,7 @@ public interface IModuleService {
      *
      * @return 是否发放成功
      */
-    Boolean publishModule(Role role,int module_id, int company_id, String start_time, String finish_time)throws AuthorityException,ForeignKeyConstraintException;
+    Boolean publishModule(Role role,int module_id, int company_id, String start_time, String finish_time)throws AuthorityException,ForeignKeyConstraintException,NoSuchEntryException;
 
     /**
      * 获得某个模板所对应的企业列表
