@@ -6,8 +6,6 @@ import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
-import ooad.common.exceptions.ForeignKeyConstraintException;
-import ooad.common.exceptions.NoSuchEntryException;
 import ooad.service.impl.AssignmentService;
 import ooad.service.impl.CompanyService;
 import ooad.service.impl.ModuleService;
@@ -74,11 +72,6 @@ public class ModuleServiceTest {
         assert module2.size() == 0;
     }
 
-    @Test(expected = NoSuchEntryException.class)
-    public void testDeleteModuleNoSuchEntry() throws Exception {
-        moduleService.deleteModule(Role.Admin, -1);
-
-    }
 
     @Test(expected = AuthorityException.class)
     public void testDeleteModuleAuthority() throws Exception {
@@ -110,10 +103,6 @@ public class ModuleServiceTest {
 
     }
 
-    @Test(expected = NoSuchEntryException.class)
-    public void testModifyModuleNoSuchEntry() throws Exception {
-        moduleService.modifyModule(Role.Admin, -1, "new module", "modified_company");
-    }
 
     @Test
     public void testAddAssignmentToModule() throws Exception {
@@ -146,11 +135,6 @@ public class ModuleServiceTest {
         }
     }
 
-    @Test(expected = ForeignKeyConstraintException.class)
-    public void testAddAssignmentToModuleForeignKeyConstraint() throws Exception {
-        moduleService.addAssignmentToModule(Role.Admin, -1, 1);
-        moduleService.addAssignmentToModule(Role.Admin, 1, -1);
-    }
 
     @Test
     public void testDeleteAssignmentFromModule() throws Exception {
@@ -228,13 +212,6 @@ public class ModuleServiceTest {
         String startDate = "2017-07-01";
         String finishDate = "2017-08-01";
         moduleService.publishModule(Role.Company, 2, 1, startDate, finishDate);
-    }
-
-    @Test(expected = ForeignKeyConstraintException.class)
-    public void testPublishModuleForeignKeyConstraint() throws Exception {
-        String startDate = "2017-07-01";
-        String finishDate = "2017-08-01";
-        moduleService.publishModule(Role.Admin, -1, -1, startDate, finishDate);
     }
 
     @Test

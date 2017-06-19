@@ -4,7 +4,6 @@ import ooad.bean.Company;
 import ooad.bean.ModuleProcess;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
-import ooad.common.exceptions.NoSuchEntryException;
 import ooad.service.impl.CompanyService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,11 +47,6 @@ public class CompanyServiceTest {
         companyService.getCModuleProcessList(Role.Admin, 1);
     }
 
-    @Test(expected = NoSuchEntryException.class)
-    public void testGetCModuleProcessListNoSuchEntry() throws Exception {
-        companyService.getCModuleProcessList(Role.Company, -1);
-    }
-
     @Test
     public void testCompleteStatus() throws Exception {
         List<ModuleProcess> cModules = companyService.getCModuleProcessList(Role.Company, 1);
@@ -72,10 +66,4 @@ public class CompanyServiceTest {
     public void testCompleteStatusAuthority() throws Exception {
         companyService.completeStatus(Role.Admin, 1);
     }
-
-    @Test(expected = NoSuchEntryException.class)
-    public void testCompleteStatusNoSuchEntry() throws Exception {
-        companyService.completeStatus(Role.Company, -1);
-    }
-
 }
