@@ -1,7 +1,6 @@
 package ooad.service.impl;
 
 import ooad.bean.Company;
-import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
@@ -37,11 +36,12 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public List<Module> getCModuleList(Role role, int company_id) throws AuthorityException, NoSuchEntryException {
+    //TODO
+    public List<ModuleProcess> getCModuleProcessList(Role role, int company_id) throws AuthorityException, NoSuchEntryException {
         if (!role.equals(Role.Company)) {
             throw new AuthorityException(role);
         }try{
-            return moduleProcessDAO.getModulesOfCompany(company_id);
+            return moduleProcessDAO.getModuleProcessesOfCompany(company_id);
         }catch (NoSuchEntryException e) {
             throw e;
         }
@@ -57,18 +57,6 @@ public class CompanyService implements ICompanyService {
         try {
             moduleProcessDAO.update(module_process_id, date.toString(), ModuleProcess.COMPLETED);
             return true;
-        } catch (NoSuchEntryException e) {
-            throw e;
-        }
-    }
-
-    @Override
-    public ModuleProcess getModuleProcess(Role role, int module_process_id) throws AuthorityException, NoSuchEntryException {
-        if (!role.equals(Role.Company)) {
-            throw new AuthorityException(role);
-        }
-        try {
-            return moduleProcessDAO.get(module_process_id);
         } catch (NoSuchEntryException e) {
             throw e;
         }

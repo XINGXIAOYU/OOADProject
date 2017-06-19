@@ -166,13 +166,13 @@ public class ModuleProcessDAO {
         return results;
     }
 
-    public List<Module> getModulesOfCompany(int companyId) throws NoSuchEntryException {
+    public List<ModuleProcess> getModuleProcessesOfCompany(int companyId) throws NoSuchEntryException {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
-        List<Module> results = new ArrayList<Module>();
+        List<ModuleProcess> results = new ArrayList<ModuleProcess>();
         try {
             transaction = session.beginTransaction();
-            String sql = "SELECT module_id FROM moduleProcess WHERE company_id = :companyId";
+            String sql = "SELECT idmoduleProcess FROM moduleProcess WHERE company_id = :companyId";
             SQLQuery query = session.createSQLQuery(sql);
             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             query.setParameter("companyId", companyId);
@@ -181,9 +181,9 @@ public class ModuleProcessDAO {
             for (Object object :
                     result) {
                 Map row = (Map)object;
-                int id = (Integer) row.get("module_id");
-                Module module= moduleDAO.get(id);
-                results.add(module);
+                int id = (Integer) row.get("idmoduleProcess");
+                ModuleProcess moduleProcess = get(id);
+                results.add(moduleProcess);
             }
         } catch (HibernateException e) {
             if(transaction != null) transaction.rollback();

@@ -1,7 +1,6 @@
 package ooad.service;
 
 import ooad.bean.Company;
-import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
 import ooad.common.Role;
 import ooad.common.exceptions.AuthorityException;
@@ -34,27 +33,37 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void testGetCModuleList() throws Exception {
-        List<Module> cModules = companyService.getCModuleList(Role.Company, 1);
+    public void testGetCModuleProcessList() throws Exception {
+        List<ModuleProcess> cModules = companyService.getCModuleProcessList(Role.Company, 1);
         if (cModules.size() > 0) {
             assert cModules.get(0).getId() == 1;
-            assert cModules.get(0).getName().equals("test module");
-            assert cModules.get(0).getDescription().equals("module for test");
+            assert cModules.get(0).getModule_id() == 1;
+            assert cModules.get(0).getCompany_id() == 1;
         }
 
     }
 
     @Test(expected = AuthorityException.class)
-    public void testGetCModuleListAuthority() throws Exception {
-        companyService.getCModuleList(Role.Admin, 1);
+    public void testGetCModuleProcessListAuthority() throws Exception {
+        companyService.getCModuleProcessList(Role.Admin, 1);
+    }
+
+    @Test(expected = NoSuchEntryException.class)
+    public void testGetCModuleProcessListNoSuchEntry() throws Exception {
+        companyService.getCModuleProcessList(Role.Company, -1);
     }
 
     @Test
     public void testCompleteStatus() throws Exception {
-        boolean result = companyService.completeStatus(Role.Company, 1);
+        List<ModuleProcess> cModules = companyService.getCModuleProcessList(Role.Company, 1);
+        ModuleProcess moduleProcess = cModules.get(1);
+        assert moduleProcess.getCompany_finish_time() == null;
+        assert moduleProcess.getStatus().equals(ModuleProcess.UNCOMPLETED);
+        boolean result = companyService.completeStatus(Role.Company, moduleProcess.getId());
         assert result == true;
-        ModuleProcess moduleProcess = companyService.getModuleProcess(Role.Company, 1);
-        assert moduleProcess.getFinish_time() != null;
+        cModules = companyService.getCModuleProcessList(Role.Company, 1);
+        moduleProcess = cModules.get(1);
+        assert moduleProcess.getCompany_finish_time() != null;
         assert moduleProcess.getStatus().equals(ModuleProcess.COMPLETED);
 
     }
@@ -66,23 +75,6 @@ public class CompanyServiceTest {
 
     @Test(expected = NoSuchEntryException.class)
     public void testCompleteStatusNoSuchEntry() throws Exception {
-        companyService.completeStatus(Role.Company, -1);
-    }
-
-    @Test
-    public void testModuleProcess() throws Exception {
-        ModuleProcess process = companyService.getModuleProcess(Role.Company, 1);
-        assert process.getModule_id() == 1;
-        assert process.getCompany_id() == 1;
-    }
-
-    @Test(expected = AuthorityException.class)
-    public void testModuleProcessAuthority() throws Exception {
-        companyService.completeStatus(Role.Admin, 1);
-    }
-
-    @Test(expected = NoSuchEntryException.class)
-    public void testModuleProcessNoSuchEntry() throws Exception {
         companyService.completeStatus(Role.Company, -1);
     }
 

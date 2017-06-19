@@ -13,25 +13,27 @@ import ooad.service.impl.CompanyService;
 import ooad.service.impl.ModuleService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring-config.xml")
 public class SpringAppTests {
-    @Autowired
+    @Resource
     private AssignmentService assignmentService;
+    @Resource
     private CompanyService companyService;
+    @Resource
     private ModuleService moduleService;
 
     @Test
     public void mainTest() {
 
         Role admin = Role.Admin;
-        //企业定义检查项目
+        //定义检查项目
         try {
             assert assignmentService.newAssignment(admin, "main test assignment", "for main test");
             List<Assignment> assignmentList = assignmentService.getAssignments();
@@ -42,7 +44,7 @@ public class SpringAppTests {
             e.printStackTrace();
         }
 
-        //企业设置模板
+        //设置模板
         try {
             assert moduleService.newModule(admin, "main test module", "for main test");
             List<Module> moduleList = moduleService.getModules();
@@ -67,7 +69,7 @@ public class SpringAppTests {
             e.printStackTrace();
         }
 
-        //企业发布模板给企业
+        //发布模板给企业
         List<Module> moduleList = moduleService.getModules();
         if (moduleList.size() > 0) {
             Module module = moduleList.get(moduleList.size() - 1);
@@ -79,6 +81,8 @@ public class SpringAppTests {
                 try {
                     assert module.getModuleStatus().equals(Module.UNPUBLISHED);
                     assert moduleService.publishModule(admin, module.getId(), company.getId(), "2016-07-01", "2017-07-01");
+                    moduleList = moduleService.getModules();
+                    module = moduleList.get(moduleList.size() - 1);
                     assert module.getModuleStatus().equals(Module.PUBLISHED);
                 } catch (AuthorityException e) {
                     e.printStackTrace();
@@ -94,18 +98,15 @@ public class SpringAppTests {
         Role company = Role.Company;
         int company_id = 1;
         try {
-            List<Module> company_moduleList = companyService.getCModuleList(company, company_id);
+            List<ModuleProcess> company_moduleList = companyService.getCModuleProcessList(company, company_id);
             if(company_moduleList.size()>0){
-                Module company_module = company_moduleList.get(0);
-                assert company_module.getName().equals("main test module");
-                assert company_module.getDescription().equals("for main test");
-                ModuleProcess moduleProcess = companyService.getModuleProcess(company,company_module.getId());
-                assert moduleProcess.getModule_id()==company_module.getId();
-                assert moduleProcess.getCompany_id()==company_id;
-                assert moduleProcess.getStatus().equals(ModuleProcess.UNCOMPLETED);
-                assert companyService.completeStatus(company,moduleProcess.getId());
-                ModuleProcess moduleProcess_after = companyService.getModuleProcess(company,company_module.getId());
-                assert moduleProcess_after.getStatus().equals(ModuleProcess.COMPLETED);
+                ModuleProcess company_module = company_moduleList.get(company_moduleList.size()-1);
+                assert company_module.getCompany_id()==company_id;
+                assert company_module.getStatus().equals(ModuleProcess.UNCOMPLETED);
+                assert companyService.completeStatus(company,company_module.getId());
+                company_moduleList = companyService.getCModuleProcessList(company, company_id);
+                company_module = company_moduleList.get(company_moduleList.size()-1);
+                assert company_module.getStatus().equals(ModuleProcess.COMPLETED);
             }
         } catch (AuthorityException e) {
             e.printStackTrace();

@@ -8,7 +8,6 @@ import org.hibernate.*;
 import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.PersistenceException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +36,8 @@ public class ModuleAssignmentDAO {
         this.assignmentDAO = assignmentDAO;
     }
 
+
+    //TODO
     public int save(ModuleAssignment newEntry) throws ForeignKeyConstraintException {
         Session session = getSessionFactory().openSession();
         Transaction transaction = null;
