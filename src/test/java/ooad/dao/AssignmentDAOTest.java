@@ -3,8 +3,8 @@ package ooad.dao;
 import ooad.bean.Assignment;
 import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,6 +25,11 @@ import static org.junit.Assert.*;
 public class AssignmentDAOTest {
     @Resource
     AssignmentDAO assignmentDAO;
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
+
+    private static int toDelete;
 
     @Test
     public void aGetAssignmentDAO() throws Exception{
@@ -41,10 +46,11 @@ public class AssignmentDAOTest {
         Assignment assignment = new Assignment("Test2", "Test");
         int newID = assignmentDAO.addAssignment(assignment);
         assertNotEquals(newID, -1);
+        toDelete = newID;
     }
 
     @Test
-    public void cGetAssignments() throws Exception {//TODO: must assert?
+    public void cGetAssignments() throws Exception {
         List<Assignment> assignmentList = assignmentDAO.getAssignments();
         for (Assignment assignment : assignmentList) {
             System.out.println(assignment);
@@ -63,8 +69,11 @@ public class AssignmentDAOTest {
 
     @Test
     public void deleteAssignment() throws Exception {
-        int toDelete = assignmentDAO.addAssignment(new Assignment("Delete", "For Delete only"));
+//        int toDelete = assignmentDAO.addAssignment(new Assignment("Delete", "For Delete only"));
         assignmentDAO.deleteAssignment(toDelete);
+        exception.expect(NoSuchEntryException.class);
+        exception.expectMessage(toDelete+"");
+        assignmentDAO.searchAssignment(toDelete);
     }
 
     @Test
@@ -77,7 +86,7 @@ public class AssignmentDAOTest {
 
     @Test
     public void searchAssignmentByNameNone() throws Exception {
-        List<Assignment> assignments = assignmentDAO.searchAssignment("Test");
+        List<Assignment> assignments = assignmentDAO.searchAssignment("Impossible");
         assertEquals(assignments.size(), 0);
     }
 

@@ -37,7 +37,6 @@ public class ModuleAssignmentDAO {
     }
 
 
-    //TODO
     public int save(ModuleAssignment newEntry) throws ForeignKeyConstraintException {
         Session session = getSessionFactory().openSession();
         Transaction transaction = null;
