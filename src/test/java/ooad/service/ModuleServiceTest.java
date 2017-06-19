@@ -52,7 +52,7 @@ public class ModuleServiceTest {
         if (setUpIsDone) return;
         Session session = sessionFactory.openSession();
         Transaction tx = null;
-        try{
+        try {
             tx = session.beginTransaction();
             String sql = "DELETE FROM module WHERE idmodule != 1 AND idmodule != 8";
             Query query = session.createSQLQuery(sql);
@@ -60,10 +60,10 @@ public class ModuleServiceTest {
             System.out.println("Rows affected: " + result);
             tx.commit();
             setUpIsDone = true;
-        }catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
             e.printStackTrace();
-        }finally {
+        } finally {
             session.close();
         }
     }
@@ -78,8 +78,8 @@ public class ModuleServiceTest {
     public void testFindModule() throws Exception {
         List<Module> modules = moduleService.findModule("test module");
         Module dbModule = modules.get(0);
-        Module stdModule = new Module(1, "test module", "module for test", Module.UNPUBLISHED);
-        assert dbModule.toString().equals(stdModule.toString());
+        assert dbModule.getName().equals("test module");
+        assert dbModule.getDescription().equals("module for test");
     }
 
     /**
@@ -155,8 +155,14 @@ public class ModuleServiceTest {
         moduleService.deleteModule(Role.Company, modules.get(modules.size() - 1).getId());
     }
 
+    /**
+     * 测试修改模板
+     *
+     * @throws Exception
+     */
+
     @Test
-    public void testModifyModule() throws Exception {
+    public void testZModifyModule() throws Exception {
         moduleService.newModule(Role.Admin, "modify module", "modify module admin");
         List<Module> modules = moduleService.findModule("modify module");
         if (modules.size() > 0) {
@@ -168,12 +174,17 @@ public class ModuleServiceTest {
             assert modules2.get(0).getName().equals("modify module");
             assert modules2.get(0).getDescription().equals("modified_admin");
         }
-
+        moduleService.deleteModule(Role.Admin, modules.get(modules.size() - 1).getId());
     }
 
+    /**
+     * 测试修改模板权限（只有管理员可以）
+     *
+     * @throws Exception
+     */
     @Test(expected = AuthorityException.class)
     public void testModifyModuleAuthority() throws Exception {
-        List<Module> modules = moduleService.findModule("new module");
+        List<Module> modules = moduleService.findModule("test module");
         if (modules.size() > 0) {
             Module module = modules.get(0);
             moduleService.modifyModule(Role.Company, module.getId(), "new module", "modified_company");
@@ -181,24 +192,38 @@ public class ModuleServiceTest {
 
     }
 
-
+    /**
+     * 测试添加项目到模板
+     *
+     * @throws Exception
+     */
     @Test
     public void testAddAssignmentToModule() throws Exception {
+        assignmentService.newAssignment(Role.Admin, "add assignment", "add assignment to module");
         List<Assignment> assignments = assignmentService.getAssignments();
         if (assignments.size() > 0) {
             Assignment assignment = assignments.get(assignments.size() - 1);
+            moduleService.newModule(Role.Admin, "add assignment module", "add assignment to module");
             List<Module> modules = moduleService.getModules();
             if (modules.size() > 0) {
-                Module module = modules.get(0);
+                Module module = modules.get(modules.size() - 1);
                 moduleService.addAssignmentToModule(Role.Admin, module.getId(), assignment.getId());
                 List<Assignment> module_assignments = moduleService.getModuleAssignments(module.getId());
                 Assignment assignment1 = module_assignments.get(module_assignments.size() - 1);
                 assert assignment1.getId() == assignment.getId();
                 assert assignment1.getName().equals(assignment.getName());
                 assert assignment1.getContent().equals(assignment.getContent());
+                moduleService.deleteModule(Role.Admin, module.getId());
+                assignmentService.deleteAssignment(Role.Admin, assignment.getId());
             }
         }
     }
+
+    /**
+     * 测试添加项目到模板权限（只有管理员可以）
+     *
+     * @throws Exception
+     */
 
     @Test(expected = AuthorityException.class)
     public void testAddAssignmentToModuleAuthority() throws Exception {
@@ -213,28 +238,40 @@ public class ModuleServiceTest {
         }
     }
 
+    /**
+     * 测试从模板中删除项目
+     *
+     * @throws Exception
+     */
 
     @Test
     public void testDeleteAssignmentFromModule() throws Exception {
+        assignmentService.newAssignment(Role.Admin, "delete assignment", "delete assignment from module");
+        List<Assignment> assignments = assignmentService.getAssignments();
+        Assignment assignment = assignments.get(assignments.size() - 1);
+        moduleService.newModule(Role.Admin, "delete assignment module", "delete assignment from module");
         List<Module> modules = moduleService.getModules();
-        if (modules.size() > 0) {
-            Module module = modules.get(0);
-            List<Assignment> assignments = moduleService.getModuleAssignments(module.getId());
-            if (assignments.size() > 0) {
-                Assignment assignment = assignments.get(assignments.size() - 1);
-                moduleService.deleteAssignmentFromModule(Role.Admin, module.getId(), assignment.getId());
-                List<Assignment> assignments2 = moduleService.getModuleAssignments(module.getId());
-                boolean hasDeletedAssignment = true;
-                for (Assignment i : assignments2) {
-                    if (i.getId() == assignment.getId()) {
-                        hasDeletedAssignment = false;
-                    }
-                }
-                assert hasDeletedAssignment == true;
+        Module module = modules.get(modules.size() - 1);
+        moduleService.addAssignmentToModule(Role.Admin, module.getId(), assignment.getId());
+        assert moduleService.deleteAssignmentFromModule(Role.Admin, module.getId(), assignment.getId());
+        List<Assignment> assignments2 = moduleService.getModuleAssignments(module.getId());
+        boolean hasDeletedAssignment = true;
+        for (Assignment i : assignments2) {
+            if (i.getId() == assignment.getId()) {
+                hasDeletedAssignment = false;
             }
         }
+        assert hasDeletedAssignment == true;
+        assignmentService.deleteAssignment(Role.Admin, assignment.getId());
+        moduleService.deleteModule(Role.Admin, module.getId());
     }
 
+
+    /**
+     * 测试从模板中删除项目权限（只有管理员可以）
+     *
+     * @throws Exception
+     */
     @Test(expected = AuthorityException.class)
     public void testDeleteAssignmentFromModuleAuthority() throws Exception {
         List<Module> modules = moduleService.getModules();
@@ -248,6 +285,11 @@ public class ModuleServiceTest {
         }
     }
 
+    /**
+     * 测试获得模板的所有项目
+     *
+     * @throws Exception
+     */
     @Test
     public void testGetModuleAssignments() throws Exception {
         List<Module> modules = moduleService.findModule("test module");
@@ -260,11 +302,18 @@ public class ModuleServiceTest {
         }
     }
 
+    /**
+     * 测试发布模板
+     *
+     * @throws Exception
+     */
+
     @Test
     public void testPublishModule() throws Exception {
+        moduleService.newModule(Role.Admin, "publish", "publish module");
         List<Module> modules = moduleService.getModules();
         if (modules.size() > 0) {
-            Module module = modules.get(0);
+            Module module = modules.get(modules.size() - 1);
             assert module.getModuleStatus().equals(Module.UNPUBLISHED);
             List<Company> companies = companyService.getCompanys();
             Company company = companies.get(0);
@@ -272,7 +321,7 @@ public class ModuleServiceTest {
             String finishDate = "2017-08-01";
             assert moduleService.publishModule(Role.Admin, module.getId(), company.getId(), startDate, finishDate);
             modules = moduleService.getModules();
-            module = modules.get(0);
+            module = modules.get(modules.size() - 1);
             assert module.getModuleStatus().equals(Module.PUBLISHED);
             List<Company> module_companys = moduleService.getModuleCompanys(module.getId());
             boolean hasPublished = false;
@@ -285,6 +334,13 @@ public class ModuleServiceTest {
         }
     }
 
+    /**
+     * 测试发布模板权限（只有管理员可以）
+     *
+     * @throws Exception
+     */
+
+
     @Test(expected = AuthorityException.class)
     public void testPublishModuleAuthority() throws Exception {
         String startDate = "2017-07-01";
@@ -292,6 +348,11 @@ public class ModuleServiceTest {
         moduleService.publishModule(Role.Company, 2, 1, startDate, finishDate);
     }
 
+    /**
+     * 测试获得某个发布模板的所有企业
+     *
+     * @throws Exception
+     */
     @Test
     public void testGetModuleCompanys() throws Exception {
         List<Module> modules = moduleService.getModules();
@@ -303,6 +364,12 @@ public class ModuleServiceTest {
             }
         }
     }
+
+    /**
+     * 测试获得模板进度项
+     *
+     * @throws Exception
+     */
 
     @Test
     public void testGetModuleProcesses() throws Exception {
