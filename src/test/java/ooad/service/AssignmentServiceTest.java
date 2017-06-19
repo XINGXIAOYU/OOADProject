@@ -24,6 +24,11 @@ public class AssignmentServiceTest {
     @Resource
     AssignmentService assignmentService;
 
+    /**
+     * 测试查找检查项目
+     * 数据库中存在则size>0
+     */
+
     @Test
     public void testFindAssignment() {
         List<Assignment> assignments = assignmentService.findAssignment("test assignment");
@@ -31,6 +36,11 @@ public class AssignmentServiceTest {
         assignments = assignmentService.findAssignment("There is no such assignment");
         assert assignments.size() == 0;
     }
+
+    /**
+     * 测试所有检查项目
+     * 检测名称和内容是否与数据库中测试数据一致
+     */
 
     @Test
     public void testGetAssignments() {
@@ -43,9 +53,15 @@ public class AssignmentServiceTest {
         }
     }
 
+    /**
+     * 测试新建检查项目
+     * 检测是否新建成功，是否添加到数据库中
+     * @throws Exception
+     */
+
     @Test
     public void testNewAssignment() throws Exception {
-        assignmentService.newAssignment(Role.Admin, "new one", "admin new");
+        assert assignmentService.newAssignment(Role.Admin, "new one", "admin new");
         List<Assignment> assignments = assignmentService.getAssignments();
         if (assignments.size() > 0) {
             String name = (String) assignments.get(assignments.size() - 1).getName();
@@ -55,20 +71,37 @@ public class AssignmentServiceTest {
         }
     }
 
+    /**
+     * 检测新建检查项目的权限（只有Admin可以新建检查项目）
+     * @throws Exception
+     */
+
     @Test(expected = AuthorityException.class)
     public void testAuthority() throws Exception {
-        assignmentService.newAssignment(Role.Company, "new one", "company new");
+       assert assignmentService.newAssignment(Role.Company, "new one", "company new");
     }
+
+    /**
+     * 检测删除检查项目
+     * @throws Exception
+     */
 
     @Test
     public void testDeleteAssignment() throws Exception {
+        assignmentService.newAssignment(Role.Admin, "delete one", "admin delete");
         List<Assignment> assignments = assignmentService.getAssignments();
-        assignmentService.deleteAssignment(Role.Admin, assignments.get(assignments.size() - 1).getId());
+        Assignment assignment = assignments.get(assignments.size()-1);
+        assert assignment.getName().equals("delete one");
+        assert assignment.getContent().equals("admin delete");
+        assert assignmentService.deleteAssignment(Role.Admin, assignments.get(assignments.size() - 1).getId());
         List<Assignment> assignments2 = assignmentService.findAssignment(assignments.get(assignments.size() - 1).getName());
         assert assignments2.size() == 0;
     }
 
-
+    /**
+     * 检测删除检查项目的权限（只有Admin可以删除检查项目）
+     * @throws Exception
+     */
     @Test(expected = AuthorityException.class)
     public void testDeleteAssignmentAuthority() throws Exception {
         assignmentService.deleteAssignment(Role.Company, 1);

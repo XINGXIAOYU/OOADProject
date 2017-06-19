@@ -22,6 +22,9 @@ public class CompanyServiceTest {
     @Resource
     CompanyService companyService;
 
+    /**
+     * 测试获得所有企业
+     */
     @Test
     public void testGetCompanys() {
         List<Company> companys = companyService.getCompanys();
@@ -30,6 +33,11 @@ public class CompanyServiceTest {
             assert companys.get(0).toString().equals(company.toString());
         }
     }
+
+    /**
+     * 测试企业项目列表
+     * @throws Exception
+     */
 
     @Test
     public void testGetCModuleProcessList() throws Exception {
@@ -42,10 +50,20 @@ public class CompanyServiceTest {
 
     }
 
+    /**
+     * 测试企业项目列表的权限（只有企业可以）
+     * @throws Exception
+     */
+
     @Test(expected = AuthorityException.class)
     public void testGetCModuleProcessListAuthority() throws Exception {
         companyService.getCModuleProcessList(Role.Admin, 1);
     }
+
+    /**
+     * 测试企业完成模板
+     * @throws Exception
+     */
 
     @Test
     public void testCompleteStatus() throws Exception {
@@ -61,6 +79,11 @@ public class CompanyServiceTest {
         assert moduleProcess.getStatus().equals(ModuleProcess.COMPLETED);
 
     }
+
+    /**
+     * 测试企业完成模板权限（只有企业可以）
+     * @throws Exception
+     */
 
     @Test(expected = AuthorityException.class)
     public void testCompleteStatusAuthority() throws Exception {

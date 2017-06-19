@@ -30,6 +30,11 @@ public class ModuleServiceTest {
     @Resource
     CompanyService companyService;
 
+    /**
+     * 测试按照名字查找模板
+     *
+     * @throws Exception
+     */
     @Test
     public void testFindModule() throws Exception {
         List<Module> modules = moduleService.findModule("test module");
@@ -38,6 +43,11 @@ public class ModuleServiceTest {
         assert dbModule.toString().equals(stdModule.toString());
     }
 
+    /**
+     * 测试获取所有模板
+     *
+     * @throws Exception
+     */
     @Test
     public void testGetModules() throws Exception {
         List<Module> modules = moduleService.getModules();
@@ -47,6 +57,12 @@ public class ModuleServiceTest {
             assert modules.get(0).getDescription().equals("module for test");
         }
     }
+
+    /**
+     * 测试新建模板
+     *
+     * @throws Exception
+     */
 
     @Test
     public void testNewModule() throws Exception {
@@ -59,19 +75,41 @@ public class ModuleServiceTest {
 
     }
 
+    /**
+     * 测试新建模板权限（只有管理员可以）
+     *
+     * @throws Exception
+     */
+
+
     @Test(expected = AuthorityException.class)
     public void testNewModuleAuthority() throws Exception {
         moduleService.newModule(Role.Company, "new module2", "new module company");
     }
 
+    /**
+     * 测试模板删除
+     *
+     * @throws Exception
+     */
+
     @Test
     public void testDeleteModule() throws Exception {
+        moduleService.newModule(Role.Admin, "delete module", "delete module admin");
         List<Module> modules = moduleService.getModules();
-        moduleService.deleteModule(Role.Admin, modules.get(modules.size() - 1).getId());
+        Module module = modules.get(modules.size() - 1);
+        assert module.getName().equals("delete module");
+        assert module.getDescription().equals("delete module admin");
+        assert moduleService.deleteModule(Role.Admin, modules.get(modules.size() - 1).getId());
         List<Module> module2 = moduleService.findModule(modules.get(modules.size() - 1).getName());
         assert module2.size() == 0;
     }
 
+    /**
+     * 测试删除模板权限（只有管理员可以）
+     *
+     * @throws Exception
+     */
 
     @Test(expected = AuthorityException.class)
     public void testDeleteModuleAuthority() throws Exception {
@@ -81,16 +119,18 @@ public class ModuleServiceTest {
 
     @Test
     public void testModifyModule() throws Exception {
-        List<Module> modules = moduleService.findModule("new module");
+        moduleService.newModule(Role.Admin, "modify module", "modify module admin");
+        List<Module> modules = moduleService.findModule("modify module");
         if (modules.size() > 0) {
             Module module = modules.get(0);
-            moduleService.modifyModule(Role.Admin, module.getId(), "new module", "modified_admin");
-            List<Module> modules2 = moduleService.findModule("new module");
+            moduleService.modifyModule(Role.Admin, module.getId(), "modify module", "modified_admin");
+            List<Module> modules2 = moduleService.findModule("modify module");
             assert modules2.size() > 0;
             assert modules2.get(0).getId() == module.getId();
-            assert modules2.get(0).getName().equals("new module");
+            assert modules2.get(0).getName().equals("modify module");
             assert modules2.get(0).getDescription().equals("modified_admin");
         }
+
     }
 
     @Test(expected = AuthorityException.class)
