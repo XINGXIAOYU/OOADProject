@@ -9,8 +9,18 @@ import ooad.common.exceptions.AuthorityException;
 import ooad.service.impl.AssignmentService;
 import ooad.service.impl.CompanyService;
 import ooad.service.impl.ModuleService;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -22,6 +32,7 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring-config.xml")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ModuleServiceTest {
     @Resource
     ModuleService moduleService;
@@ -29,6 +40,34 @@ public class ModuleServiceTest {
     AssignmentService assignmentService;
     @Resource
     CompanyService companyService;
+    @Resource
+    SessionFactory sessionFactory;
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
+    private static boolean setUpIsDone = false;
+
+    @Before
+    public void Clean() {
+        if (setUpIsDone) return;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            String sql = "DELETE FROM module WHERE idmodule != 1 AND idmodule != 8";
+            Query query = session.createSQLQuery(sql);
+            int result = query.executeUpdate();
+            System.out.println("Rows affected: " + result);
+            tx.commit();
+            setUpIsDone = true;
+        }catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+    }
+
 
     @Test
     public void testFindModule() throws Exception {
@@ -56,7 +95,6 @@ public class ModuleServiceTest {
         Module addModule = modules.get(modules.size() - 1);
         assert addModule.getName().equals("new module2");
         assert addModule.getDescription().equals("new module admin");
-
     }
 
     @Test(expected = AuthorityException.class)
@@ -65,7 +103,7 @@ public class ModuleServiceTest {
     }
 
     @Test
-    public void testDeleteModule() throws Exception {
+    public void testZDeleteModule() throws Exception {
         List<Module> modules = moduleService.getModules();
         moduleService.deleteModule(Role.Admin, modules.get(modules.size() - 1).getId());
         List<Module> module2 = moduleService.findModule(modules.get(modules.size() - 1).getName());

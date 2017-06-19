@@ -3,6 +3,12 @@ package ooad.dao;
 import ooad.bean.Module;
 import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,9 +33,34 @@ import static org.junit.Assert.*;
 public class ModuleDAOTest {
     @Resource
     ModuleDAO moduleDAO;
+    @Resource
+    SessionFactory sessionFactory;
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
+    private static boolean setUpIsDone = false;
+    private static int toDelete;
+
+    @Before
+    public void Clean() {
+        if (setUpIsDone) return;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            String sql = "DELETE FROM module_assignment WHERE idmodule_assignment != 1";
+            Query query = session.createSQLQuery(sql);
+            int result = query.executeUpdate();
+            System.out.println("Rows affected: " + result);
+            tx.commit();
+            setUpIsDone = true;
+        }catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+    }
 
     @Test
     public void aGetDAO() throws Exception {
@@ -74,8 +105,8 @@ public class ModuleDAOTest {
         for (Object aModuleList : moduleList) {
             Module module = (Module) aModuleList;
             answer += module;
+            break;
         }
-        //TODO: more
         Module module = new Module(1, "test module", "module for test", Module.UNPUBLISHED);
         assertEquals(answer, module.toString());
     }
@@ -88,6 +119,7 @@ public class ModuleDAOTest {
         Module module = moduleDAO.get(id);
         moduleT.setId(id);
         assertEquals(module.toString(), moduleT.toString());
+        toDelete = id;
     }
 
     @Test(expected = ForeignKeyConstraintException.class)
@@ -97,8 +129,9 @@ public class ModuleDAOTest {
 
     @Test
     public void delete() throws Exception {
-        Module toDelete = new Module("for delete", "hehe");
-        int id = moduleDAO.save(toDelete);
+//        Module toDelete = new Module("for delete", "hehe");
+//        int id = moduleDAO.save(toDelete);
+        int id = toDelete;
         moduleDAO.delete(id);
         exception.expect(NoSuchEntryException.class);
         exception.expectMessage(id+"");
