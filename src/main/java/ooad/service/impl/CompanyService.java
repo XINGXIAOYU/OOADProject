@@ -36,7 +36,6 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    //TODO
     public List<ModuleProcess> getCModuleProcessList(Role role, int company_id) throws AuthorityException, NoSuchEntryException {
         if (!role.equals(Role.Company)) {
             throw new AuthorityException(role);

@@ -147,7 +147,7 @@ public class ModuleProcessDAO {
         return results;
     }
 
-    public List getModuleProcesses(int moduleId) { //TODO: module.status
+    public List getModuleProcesses(int moduleId) {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
         List results = null;
