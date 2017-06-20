@@ -10,7 +10,6 @@ import org.hibernate.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.PersistenceException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 /**

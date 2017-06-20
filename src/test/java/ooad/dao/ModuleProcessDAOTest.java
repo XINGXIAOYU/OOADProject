@@ -4,7 +4,6 @@ import ooad.bean.Company;
 import ooad.bean.ModuleProcess;
 import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
-import ooad.common.util.StringToSqlDate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,10 +16,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import sun.util.locale.StringTokenIterator;
 
 import javax.annotation.Resource;
-import java.sql.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;

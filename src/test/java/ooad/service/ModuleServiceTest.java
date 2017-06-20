@@ -40,33 +40,8 @@ public class ModuleServiceTest {
     AssignmentService assignmentService;
     @Resource
     CompanyService companyService;
-    @Resource
-    SessionFactory sessionFactory;
     @Rule
     public final ExpectedException exception = ExpectedException.none();
-
-    private static boolean setUpIsDone = false;
-
-    @Before
-    public void Clean() {
-        if (setUpIsDone) return;
-        Session session = sessionFactory.openSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            String sql = "DELETE FROM module WHERE idmodule != 1 AND idmodule != 8";
-            Query query = session.createSQLQuery(sql);
-            int result = query.executeUpdate();
-            System.out.println("Rows affected: " + result);
-            tx.commit();
-            setUpIsDone = true;
-        } catch (HibernateException e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-    }
 
 
     /**

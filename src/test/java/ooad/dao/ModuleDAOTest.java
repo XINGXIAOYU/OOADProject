@@ -53,6 +53,11 @@ public class ModuleDAOTest {
             int result = query.executeUpdate();
             System.out.println("Rows affected: " + result);
             tx.commit();
+            tx = session.beginTransaction();
+            sql = "UPDATE module SET status = 'Unpublished' WHERE idmodule = 1";
+            query = session.createSQLQuery(sql);
+            result = query.executeUpdate();
+            System.out.println("Rows affected: " + result);
             setUpIsDone = true;
         }catch (HibernateException e) {
             if (tx!=null) tx.rollback();

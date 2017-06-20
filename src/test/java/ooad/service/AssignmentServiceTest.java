@@ -45,7 +45,7 @@ public class AssignmentServiceTest {
         Transaction tx = null;
         try{
             tx = session.beginTransaction();
-            String sql = "DELETE FROM assignment WHERE idassignment != 1";
+            String sql = "DELETE FROM assignment WHERE idassignment != 1 AND idassignment != 2";
             Query query = session.createSQLQuery(sql);
             int result = query.executeUpdate();
             System.out.println("Rows affected: " + result);

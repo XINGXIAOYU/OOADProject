@@ -1,14 +1,12 @@
 package ooad.dao;
 
 import ooad.bean.Company;
-import ooad.bean.Module;
 import ooad.bean.ModuleProcess;
 import ooad.common.exceptions.ForeignKeyConstraintException;
 import ooad.common.exceptions.NoSuchEntryException;
 import org.hibernate.*;
 import org.hibernate.exception.ConstraintViolationException;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
